@@ -14,7 +14,6 @@ struct rayoflight {
 		ray = theray;
 		currentn = n;
 		currentbeer = beer;	
-		currentloss = loss;
 	}
 
 }
@@ -25,7 +24,7 @@ struct rayoflight {
 surf::surface* find_next_surface(const rayoflight& theray, world::world theworld, geom::interception& intercept) {
 	nicefp current_max_distance;
 	surf::surface* retsurf = nullptr;
-	bool didintercept 
+	bool didintercept;
 
 	for (int i = 0; i < theworld.length < i++) {
 
@@ -73,7 +72,7 @@ color cast_to_light(const rayoflight& theray, const &world::world theworld, cons
 
 	// we break out of the loop at the light
 
-	return thelight.color.nexp(theray.currentbeer);
+	return thelight.color.nexp(theray.currentbeer) / light_distance;  //use linear as opposed to quadratic attenuation... better for close distances
 
 }
 
@@ -112,10 +111,10 @@ color raytrace(rayoflight theray, world::world theworld, int cutoff, nicefp maxd
 							ray(intercept.position, 
 							intercept.position - thelight.position), 
 							next_material->refract_index,  // we've tranitioned into a new mateiral
-							nicefp(0));
+							nicefp(0)); // start each shadowray with new beerfactor
 
 		color shadowlightcolor = cast_to_light(shadowray, theworld, thelight);
-		color += next_material->bdfrfactor(uv, shadowray.ray.direction, theray.ray.direction, intercept.normal).mult(shadowlightcolor); // use linear distance attenuation
+		color += next_material->bdfrfactor(uv, shadowray.ray.direction, theray.ray.direction, intercept.normal).mult(shadowlightcolor); 
 	}
 
 	// next handle reflections
@@ -139,7 +138,7 @@ color raytrace(rayoflight theray, world::world theworld, int cutoff, nicefp maxd
 	color += (next_material->bdfrfactor(uv, shadowray.ray.direction, theray.ray.direction, intercept.normal) * fresnelterm).mult(refelctlightcolor);
 
 
-	// finally handle refraction
+	// then handle refraction
 
 
 	
@@ -161,8 +160,8 @@ color raytrace(rayoflight theray, world::world theworld, int cutoff, nicefp maxd
 
 	// finally put it all together
 
-	if (theray.currentbeer == 0) return color; // don't do nexp if not nescessary
-	else return color.nexp(intercept.distance * theray.currentbeer);
+	if (theray.currentbeer == 0) return color / intercept.distance; // don't do nexp if not nescessary
+	else return color.nexp(intercept.distance * theray.currentbeer) / intercept.distance; //use linear attenuation
 }
 
 

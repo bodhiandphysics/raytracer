@@ -14,10 +14,15 @@ namespace geom {
 		}
 
 
-		nicefp operator+ (const& nicefp other) {return value + other.value};
-		nicefp operator- (const& nicefp other) {return value - other.value};
-		nicefp operator* (const& nicefp other) {return value * other.value};
-		nicefp operator/ (const& nicefp other) {return value / other.value};
+		nicefp operator+ (const& nicefp other) {return nicepf(value + other.value)};
+		nicefp operator- (const& nicefp other) {return nicefp(value - other.value)};
+		nicefp operator* (const& nicefp other) {return nicefp(value * other.value)};
+		nicefp operator/ (const& nicefp other) {return nicefp(value / other.value)};
+
+		nicefp operator+ (const& double other) {return value + other};
+		nicefp operator- (const& double other) {return value - other};
+		nicefp operator* (const& double other) {return value * other};
+		nicefp operator/ (const& double other) {return value / other};
 
 		bool operator< (const &nicefp other) {
 
@@ -55,6 +60,25 @@ namespace geom {
 		const nicefp y;
 		const nicefp z;
 
+		vec3(nicefp x, nicefp y, nicefp z) {
+
+			this.x = x;
+			this.y = y;
+			this.z = z;
+		}
+
+		vec3(double x, double y, double z) {
+
+			this.x = nicefp(x);
+			this.y = nicefp(y);
+			this.z = nicefp(z);
+		}
+
+		vec3 mult(cons& vec3 other) { // a termwise mult
+
+			return vec3(x*other.x, y*other.y, z*other.z);
+		}
+
 		nicefp norm() {
 
 			return sqrt(x*x + y*y + z*z);
@@ -65,14 +89,23 @@ namespace geom {
 			return x*x + y*y + z*z;
 		}
 
+		vec3 normalize() {
+
+
+			nicefp thenorm = this.norm;
+			if (thenorm == 0) // the direction is arbitrary
+				return vec3(nicefp(1), nicefp(0), nicefp(0))
+			else return vec3(x/thenorm, y/thenorm, z/thenorm);
+		}
+
 		vec3 operator+ (const &vec3 other) {
 
-			return {.x = x + other.x; .y = y + other.y, .z = z + other.z};
+			return vec3(x + other.x, y + other.y, z + other.z);
 		}
 
 		vec3 operator- (const &vec3 other) {
 
-			return {.x = x - other.x; .y = y - other.y, .z = z - other.z};
+			return vec3(x - other.x, y - other.y, z - other.z);
 		}
 
 		bool operator== (const &vec3 other) {
@@ -82,20 +115,20 @@ namespace geom {
 		}
 
 
-		vec3 operator*(double mult) {
+		vec3 operator*(const &nicefp mult) {
 
-			return {.x = x* mult, .y = y* mult, .z = z * mult};
+			return vec3(x * mult, y * mult, z * mult);
 		}
 
-		vec3 operator/(double div) {
-
-			return {.x = x/div, .y = y/div, .z = z/div};
+		vec3 operator/(const &nicefp div) {
+			return vec3(x / div, y / div, z / div);
+		}
 
 		}
 
 		bool iszero() {
 
-			return return x == 0 && y == 0 && z == 0;
+			return return x.value == 0 && y.value == 0 && z.value == 0;
 
 		}
 
@@ -110,13 +143,19 @@ namespace geom {
 			nicefp returny = z*other.x - x*other.z;
 			nicefp returnx = y*other.z - z*other.y;
 
-			return {.x = returnx, .y = returny, .z = returnz};
+			return vec3(returnx, returny, returnz);
 
 		}
 
 		vec3 nexp(vec3 vec) {
 
-			return vec3(nicenexp(vec.x, vec.y, vec.z));
+			return vec3(nicenexp(vec.x),  nicenexp(vec.y), nicenexp(vec.z));
+		}
+
+		vec3 reflect(const  vec3 &normal) {
+
+			newdirection = this - 2(this.dot(normal * normal))
+			return newdirection;
 		}
 
 		void translate(vec3 &by) {
@@ -143,31 +182,31 @@ namespace geom {
 
 		vec3 cols[3];
 
-		mat3(vec3 row1, vec3 row2, vec3 row3) {
+		mat3(vec3 col1, vec3 col2, vec3 col3) {
 
 
-			cols[1] = row1;
-			cols[2] = row2;
-			cols[3] = row3;
+			cols[1] = col1;
+			cols[2] = col2;
+			cols[3] = col3;
 		}
 
 		mat3 transpose() {
 
-			vec3 row1, row2, row3;
+			vec3 col1, col2, col3;
 
-			row1.x = cols[1].x;
-			row1.y = cols[2].x;
-			row1.z = cols[3].x;
+			col1.x = cols[1].x;
+			col1.y = cols[2].x;
+			col1.z = cols[3].x;
 
-			row2.x = cols[1].y;
-			row2.y = cols[2].y;
-			row2.z = cols[3].y;
+			col2.x = cols[1].y;
+			col2.y = cols[2].y;
+			col2.z = cols[3].y;
 
-			row3.x = cols[1].z;
-			row3.y = cols[2].z;
-			row3.z = cols[3].z;
+			col3.x = cols[1].z;
+			col3.y = cols[2].z;
+			col3.z = cols[3].z;
 
-			return mat3(row1, row2, row3);
+			return mat3(col1, col2, col3);
 
 		}
 
@@ -227,46 +266,58 @@ namespace geom {
 	struct ray {
 
 		vec3 origin;
-		vec3 direction; // should always be normalized;
+		vec3 direction; // should always be normalize; but can be passed in unnormalized
 
-		ray(vec3 anorigin, vec3 unnormalized) {
+		ray(const vec3 &anorigin, const vec3 &unnormalized) {
 
 			origin = anorigin;
-			direction = unnormalized.norm();
+			direction = unnormalized.normalize();
 
 		}
 
-		ray reflect(vec3& point, vec3& normal) {
+		ray reflect(const vec3 &point,const  vec3 &normal) {
 
-			vec3 newdirection = direction - 2*normal.dot(direction);
+			vec3 newdirection = direction.reflect(normal);
 			return ray(point + newdirection*nicefp(.0001), newdirection); // perturb the new ray a little
 		}
 
-		bool refract(vec3& point, vec3& normal, nicefp inref_index, nicefp outref_index, ray& result) {
-
-			if (outref_index == 0) return false // no refraction because no light transport;
-
-			double index_ratio = inref_index.value / outref_index.value;
-			double cosincedent = -ray.direction.dot(normal).value; 
-			double sinout2 = (1 - cosincedent*cosincedent) * index_ratio;
-			double discriminant = 1 - sinout2;
-
-			if (discriminant <= .00001) return false // total internal reflection
-
-			vec3 refractdir = nicefp(index_ratio)*ray.direction
-									 + nicefp(index_ratio*cosincedent - sqrt(discriminant))*normal;
-
-			result.origin = point + refractdir*nicefp(.0001); // perturn the new ray a little
-			result.direction = refractdir;
-
-			return true;
 	};
+
+	bool refract(const vec3& point, const vec3& normal, const &nicefp inref_index, const &nicefp outref_index, ray& result) {
+
+		if (outref_index == 0) return false // no refraction because no light transport;
+
+		double index_ratio = inref_index.value / outref_index.value;
+		double cosincedent = -ray.direction.dot(normal).value; 
+		double sinout2 = (1 - cosincedent*cosincedent) * index_ratio;
+		double discriminant = 1 - sinout2;
+
+		if (discriminant <= .00001) return false // total internal reflection
+
+		vec3 refractdir = nicefp(index_ratio)*ray.direction
+								 + nicefp(index_ratio*cosincedent - sqrt(discriminant))*normal;
+
+		result.origin = point + refractdir*nicefp(.0001); // perturn the new ray a little
+		result.direction = refractdir;
+
+		return true;
+	}
 
 	struct interception {
 
 		nicefp distance;
 		vec3 position; // vector from center of object to intercept point
 		vec3 normal;
+		uv uv;
+
+		interception(nicefp distance, vec3 position, vec3 normal, uv uv) {
+
+			this.distance = distance;
+			this.postition = position;
+			this.normal = normal;
+			this.uv = uv;
+		}
+	
 	};
 
 	struct uv {
@@ -287,9 +338,11 @@ namespace geom {
 		virtual bool calc_interception(const &ray, const nicefp within_d, &intercetion out) = 0;
 		virtual void translate(vec &by) = 0; // always translate after rotating
 		virtual void rotate(vec3 &by) = 0; // always rotate before translation
+		virtual void scale(double factor) = 0;
+
 		virtual uv getuv(vec3 &position) = 0;
 		virtual vec3 get_normal(vec3 &position) = 0;
-
+		
 	};
 
 	struct triangle: shape {
@@ -331,11 +384,21 @@ namespace geom {
 
 		virtual void rotate(mat3 &by) { // don't rotate triangles unless to absolutely must 
 
-			point_a.rotate(by);
+			position.rotate(by);
 			point_b.rotate(by);
 			point_c.rotate(by);
 
 			normal = normal.rotate(by); // update normal!!! (could rotate, but this prevents errors?)
+
+		}
+
+		virtual void scale(double factor) {
+
+			position *= factor;
+			side_a *= factor;
+			side_b *= factor;
+			area2 *= factor * factor;
+			area *= factor;
 
 		}
 
@@ -376,8 +439,9 @@ namespace geom {
 			t = q.dot(edge2);
 
 			out.distance = t;
-			out.position = ((u * edge1) + (v * edge2)) / sqrt(determinant);
+			out.position = position + ((u * edge1) + (v * edge2)) / sqrt(determinant);
 			out.normal = normal;
+			out.uv = getuv(out.position);
 			return true;
 		}
 
@@ -446,7 +510,14 @@ namespace geom {
 
 		virtual void rotate(vec3 &by) { 
 
+			center.rotate(by);
 			orientationvec.rotate(by);
+		}
+
+		virtual void scale(double factor) {
+
+			center *= scale;
+			radius *= scale;
 		}
 
 		vec3 get_normal(vec3 &position) { //centered on origin of sphere!!!
@@ -485,6 +556,7 @@ namespace geom {
 					out.distance = distance_m;
 					out.position = delta_o_c + direction * distance_p ; // i.e. orign + direction* distance - center
 					out.normal = getnormal(out.position);
+					out.uv = getuv(out.position);
 					if ((out.position - center).dot(orientation) > amaxangle) return true;
 				}
 
