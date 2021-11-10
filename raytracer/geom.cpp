@@ -331,6 +331,11 @@ namespace geom {
 			v = av;
 		}
 
+		uv(double au, double av) {
+
+			uv(nicefp(au), nicefp(av));
+		}
+
 	};
 
 	struct shape { 
@@ -479,20 +484,14 @@ namespace geom {
 		nicefp radius;
 
 
-		virtual sphere(vec3 acenter, vec3 orientationvec, nicefp amaxangle) { // maxangle in cos nicefps
+		virtual sphere(vec3 acenter, vec3 orientationvec, nicefp amaxangle, nicefp aradius) { // maxangle in cos nicefps
 
 			center = acenter;
 			orientation = orientationvec;
 			maxangle = amaxangle;
-			radius = orientationvec.norm;
+			radius = aradius;
 		}
 
-		virtual sphere(vec3 acenter, nicefp radius) {
-
-			sphere(acenter, vec3(1,0,0), -1); // the dot produts are always great than -1
-		}
-
-		virtual ~sphere() = default;
 
 		virtual vec3 get_normal(vec3 position) override {
 

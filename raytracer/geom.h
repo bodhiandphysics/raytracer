@@ -114,7 +114,7 @@ namespace geom {
 
 		
 
-		virtual void translate(vec &by); =
+		virtual void translate(vec &by);
 
 
 		virtual void rotate(mat3 &by); 
