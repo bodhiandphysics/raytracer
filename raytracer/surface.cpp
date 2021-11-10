@@ -1,5 +1,6 @@
 #include <geom.h>
 #include <math.h>
+#include <unistd.h>
 
 namespace surf {
 
@@ -18,11 +19,11 @@ namespace surf {
 		nicefp refract_index = 1;
 
 
-		virtual color materialcolor(uv location) = 0;
-		virtual color ambient(uv location) = 0;
-		virtual color diffuse(uv location) = 0;
-		virtual color specular(uv location) = 0;
-		virtual color bdfrfactor(uv uv, vec3 tolight, vec3 fromeye-, vec3 normal) = 0; //assume linear optics
+		virtual color materialcolor(uv location) {return vec3(0,0,0);}
+		virtual color ambient(uv location) {return vec3(0,0,0);} 
+		virtual color diffuse(uv location) {return vec3(0,0,0);}
+		virtual color specular(uv location) {return vec3(0,0,0);}
+		virtual color bdfrfactor(uv uv, vec3 tolight, vec3 fromeye, vec3 normal) {return vec3(0,0,0);} //assume linear optics
 		
 
 	};
@@ -45,18 +46,39 @@ namespace surf {
 	struct surface {
 
 		const shape* shape;
-		const material* inside;
-		const material* outside;
+		material* inside;
+		material* outside;
 
-		surface(const shape* ashape, const material* insidemat, const material*  outsidemat) {
+		template<class SHAPE>
+		surface(const SHAPE ashape, const material* insidemat, const material* outsidemat) {
 
-			shape = ashhape;
+			SHAPE* theshape = (SHAPE*) malloc(sizeof(SHAPE));
+
+			*theshape = ashape;
+
+			this.shape = theshape;
 			inside = insidemat;
 			outside = outsidemat;
+
+		}
+
+		~surface() {
+
+			free(shape);
 		}
 
 	};
 
+	struct openspace: material{
+
+		bool doesrefract = true;
+		bool doesambient = false;
+		bool doeslambert = false;
+		bool doestransmit = true;
+		bool doesfresnel = true;
+		bool doesreflect = false;
+
+	}
 
 	struct phong: material {
 

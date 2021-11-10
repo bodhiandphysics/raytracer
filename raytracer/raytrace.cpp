@@ -26,9 +26,7 @@ surf::surface* find_next_surface(const rayoflight& theray, world::world theworld
 	surf::surface* retsurf = nullptr;
 	bool didintercept;
 
-	for (int i = 0; i < theworld.length < i++) {
-
-		surf::surface* checksurf = &theworld[i];
+	for (surf::surface &checksurf: theworld.surfaces) {
 
 		//rmember to set intercept max distance in caller
 		didintercept = checksurf->shape.calc_interception(theray.ray, min(intercept.distance), intercept); 
@@ -100,7 +98,7 @@ color raytrace(rayoflight theray, world::world theworld, int cutoff, nicefp maxd
 	// first do global illumination
 	if (next_material.doesambient) {
 
-		retcolor += next_material->material_color.mult(next_material->ambient(uv));
+		retcolor += next_material->material_color.mult(next_material->ambient(uv)).mult(theworld.ambientlight);
 	}
 
 	// next cast to all the light sources

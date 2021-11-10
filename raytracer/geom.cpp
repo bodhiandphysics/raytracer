@@ -356,7 +356,7 @@ namespace geom {
 		nicefp area2;
 		nicefp area;
 
-		virtual triangle(vec3 aposition, vec3 aside_a, vec3 aside_b, vec3 anormal, uv uv_a, uv uv_b, uv uv_c) {
+		triangle(vec3 aposition, vec3 aside_a, vec3 aside_b, vec3 anormal, uv uv_a, uv uv_b, uv uv_c) {
 
 			position = aposition;
 			side_a = aside_a;
@@ -371,8 +371,6 @@ namespace geom {
 			area = sqrt(area2);
 
 		}
-
-		virtual ~triangle() = default;
 
 		
 
