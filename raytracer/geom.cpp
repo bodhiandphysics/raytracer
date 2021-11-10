@@ -1,8 +1,12 @@
 #include <math.h>
 
 namespace geom {
+
+// basic geometry routines
 	
 	struct nicefp {
+
+		// wrapper for doubles to avoid mistakes made in fp comparison
 
 		const double FPCUTOFF = .000001;
 
@@ -54,6 +58,9 @@ namespace geom {
 		else return exp(-x.vlaue);
 
 	}
+
+	// 3 vectors, used to represent locations, displacements, and colors
+
 	struct vec3 {
 
 		const nicefp x;
@@ -74,22 +81,22 @@ namespace geom {
 			this.z = nicefp(z);
 		}
 
-		vec3 mult(cons& vec3 other) { // a termwise mult
+		vec3 mult(cons& vec3 other) { // a termwise mult, mostly used for colors
 
 			return vec3(x*other.x, y*other.y, z*other.z);
 		}
 
-		nicefp norm() {
+		nicefp norm() { // the length of the vector
 
 			return sqrt(x*x + y*y + z*z);
 		}
 
-		nicefp norm2() {
+		nicefp norm2() { // the norm without the sqrt, to avoid slow ops
 
 			return x*x + y*y + z*z;
 		}
 
-		vec3 normalize() {
+		vec3 normalize() { // return a normalization of the vector
 
 
 			nicefp thenorm = this.norm;
@@ -115,7 +122,7 @@ namespace geom {
 		}
 
 
-		vec3 operator*(const &nicefp mult) {
+		vec3 operator*(const &nicefp mult) { // scalar multiplication
 
 			return vec3(x * mult, y * mult, z * mult);
 		}
@@ -124,13 +131,6 @@ namespace geom {
 			return vec3(x / div, y / div, z / div);
 		}
 
-		}
-
-		bool iszero() {
-
-			return return x.value == 0 && y.value == 0 && z.value == 0;
-
-		}
 
 		nicefp dot(const &vec3 other) {
 
@@ -147,25 +147,25 @@ namespace geom {
 
 		}
 
-		vec3 nexp(vec3 vec) {
+		vec3 nexp(vec3 vec) { // e ^ -x, userful for the beer equation
 
 			return vec3(nicenexp(vec.x),  nicenexp(vec.y), nicenexp(vec.z));
 		}
 
-		vec3 reflect(const  vec3 &normal) {
+		vec3 reflect(const  vec3 &normal) { // find the reflection of a vector on normal
 
 			newdirection = this - 2(this.dot(normal * normal))
 			return newdirection;
 		}
 
-		void translate(vec3 &by) {
+		void translate(vec3 &by) { // move the vector (note... move original vector!)
 
 			x += by.x;
 			y += by.y;
 			z += by.z;
 		}
 
-		void rotate(mat3 &rotation) {
+		void rotate(mat3 &rotation) { // rotate the vector
 
 			xbuff = this.dot(rotation[1]);
 			ybuff = this.dot(rotation[2]);
@@ -175,10 +175,20 @@ namespace geom {
 			y = ybuff;
 			z = zbuff;
 		}
+
+		void scale(vec3 &by) {
+
+			x *= by.x;
+			y *= by.y;
+			z *= by.z;
+		}
 		
 	};
 
 	struct mat3 {
+
+		// 3 by 3 matrices, represented as vectors of vec3s, because I'm insane
+
 
 		vec3 cols[3];
 
@@ -190,7 +200,7 @@ namespace geom {
 			cols[3] = col3;
 		}
 
-		mat3 transpose() {
+		mat3 transpose() { // matrix transpose
 
 			vec3 col1, col2, col3;
 
@@ -210,7 +220,8 @@ namespace geom {
 
 		}
 
-		mat3 leftmult(mat3 &other) { /// all this is slow!!!!! But i'm not animating, so this will be used very rarely
+		mat3 leftmult(mat3 &other) { // apply as linear operator. 
+									//all this is slow!!!!! But i'm not animating, so this will be used very rarely
 
 			vec3 buffer1, buffer2, buffer3;
 			mat3 trans = other.transpose;
@@ -231,7 +242,7 @@ namespace geom {
 		}
 	};
 
-	mat3 genrotz(nicefp theta) {
+	mat3 genrotz(nicefp theta) { // convert angle (in radians) to rotation matrix;
 
 		nicefp costheta = cos(theta);
 		nicefp sintheta = sin(theta);
@@ -263,7 +274,7 @@ namespace geom {
 					vec3(0, sintheta, costheta));
 
 	}
-	struct ray {
+	struct ray { // the fundemental structure of the ray tracer.  A ray from a point in a (normalized) direction
 
 		vec3 origin;
 		vec3 direction; // should always be normalize; but can be passed in unnormalized
@@ -275,33 +286,38 @@ namespace geom {
 
 		}
 
-		ray reflect(const vec3 &point,const  vec3 &normal) {
+		ray reflect(const vec3 &point,const vec3 &normal) { // create a reflection ray
 
 			vec3 newdirection = direction.reflect(normal);
 			return ray(point + newdirection*nicefp(.0001), newdirection); // perturb the new ray a little
 		}
 
+
+	// this is aweful!! Create a refraction ray. 
+
+		bool refract(const vec3& point, const vec3& normal, const &nicefp inref_index, const &nicefp outref_index, ray& result) {
+
+			if (outref_index == 0) return false // no refraction because no light transport;
+
+			double index_ratio = inref_index.value / outref_index.value;
+			double cosincedent = -ray.direction.dot(normal).value; // we're coming into the point, so invert direction
+			double sinout2 = (1 - cosincedent*cosincedent) * index_ratio;
+			double discriminant = 1 - sinout2;
+
+			if (discriminant <= .00001) return false // total internal reflection
+
+			vec3 refractdir = nicefp(index_ratio)*direction
+									 + nicefp(index_ratio*cosincedent - sqrt(discriminant))*normal;
+
+			result.origin = point + refractdir*nicefp(.0001); // perturb the new ray a little
+			result.direction = refractdir;
+
+			return true;
+		}
+
 	};
 
-	bool refract(const vec3& point, const vec3& normal, const &nicefp inref_index, const &nicefp outref_index, ray& result) {
-
-		if (outref_index == 0) return false // no refraction because no light transport;
-
-		double index_ratio = inref_index.value / outref_index.value;
-		double cosincedent = -ray.direction.dot(normal).value; 
-		double sinout2 = (1 - cosincedent*cosincedent) * index_ratio;
-		double discriminant = 1 - sinout2;
-
-		if (discriminant <= .00001) return false // total internal reflection
-
-		vec3 refractdir = nicefp(index_ratio)*ray.direction
-								 + nicefp(index_ratio*cosincedent - sqrt(discriminant))*normal;
-
-		result.origin = point + refractdir*nicefp(.0001); // perturn the new ray a little
-		result.direction = refractdir;
-
-		return true;
-	}
+	// interception structures hold the information from an interception
 
 	struct interception {
 
@@ -319,6 +335,8 @@ namespace geom {
 		}
 	
 	};
+
+	// u v coordinates for textures
 
 	struct uv {
 
@@ -338,6 +356,7 @@ namespace geom {
 
 	};
 
+	// the basic geometric primative.  Currently only includes sphere and triables (probably should add cones and cyllinders)
 	struct shape { 
 
 		virtual bool calc_interception(const &ray, const nicefp within_d, &intercetion out) = 0;
