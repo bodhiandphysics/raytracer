@@ -1,14 +1,11 @@
 TODO
 
+general cleanup!!!
 
+update geom.c++ scale to be a vector scale
+fix sphere rotation
 
-add header files for geom.c++
-
-
-
-cleanup geometry a lot!!!
-
-write world
-write io routines
 create makefile
+
+if its slow, take out the sqrting 
 

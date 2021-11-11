@@ -20,7 +20,7 @@ struct camera {
 	volatile int cutoff;
 
 
-	render(int start, int stride, world::world theworld, int cutoff, double maxdistance) {
+	void render(int start, int stride, world::world theworld, int cutoff, double maxdistance) {
 
 		vec3 position = this.position;
 		vec3 direction = this.direction;
