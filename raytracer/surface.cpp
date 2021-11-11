@@ -19,11 +19,11 @@ namespace surf {
 		nicefp refract_index = 1;
 
 
-		virtual color materialcolor(uv location) {return vec3(0,0,0);}
-		virtual color ambient(uv location) {return vec3(0,0,0);} 
+		virtual color materialcolor(const uv &location) {return vec3(0,0,0);}
+		virtual color ambient(const uv &location) {return vec3(0,0,0);} 
 		virtual color diffuse(uv location) {return vec3(0,0,0);}
 		virtual color specular(uv location) {return vec3(0,0,0);}
-		virtual color bdfrfactor(uv uv, vec3 tolight, vec3 fromeye, vec3 normal) {return vec3(0,0,0);} //assume linear optics
+		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal) {return vec3(0,0,0);} //assume linear optics
 		
 
 	};
@@ -50,7 +50,7 @@ namespace surf {
 		material* outside;
 
 		template<class SHAPE>
-		surface(const SHAPE ashape, const material* insidemat, const material* outsidemat) {
+		surface(const SHAPE &ashape, const material* insidemat, const material* outsidemat) {
 
 			SHAPE* theshape = (SHAPE*) malloc(sizeof(SHAPE));
 
@@ -91,7 +91,7 @@ namespace surf {
 
 		virtual color shiny(uv uv) = 0;
 
-		virtual color bdfrfactor(uv uv, vec3 tolight, vec3 fromeye, vec3 normal) final { // 
+		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal) final { // 
 
 			vec3 diff = diffuse(uv);
 			color retcolor(0, 0, 0);
@@ -125,7 +125,7 @@ namespace surf {
 		bool doesreflect = false;
 
 
-		virtual color bdfrfactor(uv uv, vec3 tolight, vec3 fromeye, vec3 normal) final {
+		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal) final {
 
 			vec3 df = diffuse(uv);
 			color retcolor(0, 0, 0);
@@ -150,13 +150,9 @@ namespace surf {
 		bool doesfresnel = true;
 		bool doesreflect = true;
 
-		virtual color shiny(uv uv) override {
+		virtual color shiny(uv uv) override = 0;
 
-
-
-			}
-
-		virtual color bdfrfactor(uv uv, vec3 tolight, vec3 fromeye, vec3 normal) final {
+		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal) final {
 
 			vec3 shin = shiny(uv);
 			color retcolor(0,0,0);
@@ -183,7 +179,7 @@ namespace surf {
 		bool doesreflect = true;
 
 
-		virtual color bdfrfactor(uv uv, vec3 tolight, vec3 fromeye, vec3 normal) final {
+		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal) final {
 
 			return specular(uv); // assume a phong exponent of infinity
 

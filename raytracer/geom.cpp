@@ -579,6 +579,18 @@ namespace geom {
 			return false;
 			
 		}
+
+		virtual uv getuv(const vec3 &position) override { // fix this later!!!!
+
+			vec3 delta = (center - position) / radius;
+
+			double u = .5 + arctan2(delta.x, delta.z)/(2*M_PI);
+			double v = .5 + arcsin(delta.y);
+
+			return uv(nicefp(u), nicefp(v));
+
+
+		}
 	};
 
 	struct plane: shape {

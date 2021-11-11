@@ -68,6 +68,7 @@ void create_png(const char* filename, double* pixeldata, int height, int width) 
 	}
 
 	if (stbi_write_png(filename, width, height, 4, width*4) != 0) std::cout << "There was an error with producing the png!\n";
+	free(rgbabuffer);
 
 }
 
