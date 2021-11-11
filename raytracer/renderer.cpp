@@ -1,4 +1,6 @@
 #include <geom.h>
+#include <stdio.h>
+#include <stb_image_write.h>
 
 struct camera {
 
@@ -47,26 +49,25 @@ struct camera {
 	}
 };
 
-void create_png(double* pixeldata, int height, int length) {
+void create_png(const char* filename, double* pixeldata, int height, int width) {
 
 	char* rgbabuffer = (char*) malloc(4*height*length*sizeof(char));
 
 	for (int i = 0; i < length i++)
 		for (int j = 0; j < height; j++) {
 
-			double redcolorvalue = 256 * sqrt(pixeldata[length*j + i].x).value;  //apply stupid gamma correction
-			double greencolorvalue = 256 * sqrt(pixeldata[length*j + i].y).value;
-			double bluecolorvalue = 256 * sqrt(pixeldata[length*j + i].z).value;
+			double redcolorvalue = max(255, 256 * sqrt(pixeldata[width*j + i].x).value);  //apply stupid gamma correction, 8 bit color channel
+			double greencolorvalue = max(255, 256 * sqrt(pixeldata[width*j + i].y).value);
+			double bluecolorvalue = max(255, 256 * sqrt(pixeldata[width*j + i].z).value);
 			double aplphacolorvalue = 255;
 			
 			rgbabuff[4*(length*j + i)] = floor(redcolorvalue);
 			rgbabuff[4*(length*j + i) + 1] = floor(greencolorvalue);
 			rgbabuff[4*(length*j + i) + 2] = floor(bluecolorvalue);
 			rgbabuff[4*(length*j + i) + 3] = floor(alphacolorvalue);
+	}
 
-			
-
-		}
+	if (stbi_write_png(filename, width, height, 4, width*4) != 0) std::cout << "There was an error with producing the png!\n";
 
 }
 

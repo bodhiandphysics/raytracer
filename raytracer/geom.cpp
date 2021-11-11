@@ -147,25 +147,25 @@ namespace geom {
 
 		}
 
-		vec3 nexp(vec3 vec) { // e ^ -x, userful for the beer equation
+		vec3 nexp(const& vec3 vec) { // e ^ -x, userful for the beer equation
 
 			return vec3(nicenexp(vec.x),  nicenexp(vec.y), nicenexp(vec.z));
 		}
 
-		vec3 reflect(const  vec3 &normal) { // find the reflection of a vector on normal
+		vec3 reflect(const&  vec3 &normal) { // find the reflection of a vector on normal
 
 			newdirection = this - 2(this.dot(normal * normal))
 			return newdirection;
 		}
 
-		void translate(vec3 &by) { // move the vector (note... move original vector!)
+		void translate(const vec3 &by) { // move the vector (note... move original vector!)
 
 			x += by.x;
 			y += by.y;
 			z += by.z;
 		}
 
-		void rotate(mat3 &rotation) { // rotate the vector
+		void rotate(const mat3 &rotation) { // rotate the vector
 
 			xbuff = this.dot(rotation[1]);
 			ybuff = this.dot(rotation[2]);
@@ -176,7 +176,7 @@ namespace geom {
 			z = zbuff;
 		}
 
-		void scale(vec3 &by) {
+		void scale(double by;) {
 
 			x *= by.x;
 			y *= by.y;
@@ -192,7 +192,7 @@ namespace geom {
 
 		vec3 cols[3];
 
-		mat3(vec3 col1, vec3 col2, vec3 col3) {
+		mat3(const vec3 &col1,const &vec3 col2,const vec3 &col3) {
 
 
 			cols[1] = col1;
@@ -220,7 +220,7 @@ namespace geom {
 
 		}
 
-		mat3 leftmult(mat3 &other) { // apply as linear operator. 
+		mat3 leftmult(const mat3 &other) { // apply as linear operator. 
 									//all this is slow!!!!! But i'm not animating, so this will be used very rarely
 
 			vec3 buffer1, buffer2, buffer3;
@@ -242,7 +242,7 @@ namespace geom {
 		}
 	};
 
-	mat3 genrotz(nicefp theta) { // convert angle (in radians) to rotation matrix;
+	mat3 genrotz(const nicefp theta) { // convert angle (in radians) to rotation matrix;
 
 		nicefp costheta = cos(theta);
 		nicefp sintheta = sin(theta);
@@ -253,7 +253,7 @@ namespace geom {
 
 	}
 
-	mat3 genroty(nicefp theta) {
+	mat3 genroty(const nicefp theta) {
 
 		nicefp costheta = cos(theta);
 		nicefp sintheta = sin(theta);
@@ -264,7 +264,7 @@ namespace geom {
 
 	}
 
-	mat3 genrotx(nicefp theta) {
+	mat3 genrotx(const nicefp theta) {
 
 		nicefp costheta = cos(theta);
 		nicefp sintheta = sin(theta);
@@ -326,7 +326,7 @@ namespace geom {
 		vec3 normal;
 		uv uv;
 
-		interception(nicefp distance, vec3 position, vec3 normal, uv uv) {
+		interception(const nicefp &distance, const vec3 &position, const vec3 &normal, const uv &uv) {
 
 			this.distance = distance;
 			this.postition = position;
@@ -359,9 +359,9 @@ namespace geom {
 	// the basic geometric primative.  Currently only includes sphere and triables (probably should add cones and cyllinders)
 	struct shape { 
 
-		virtual bool calc_interception(const &ray, const nicefp within_d, &intercetion out) = 0;
-		virtual void translate(vec &by) = 0; // always translate after rotating
-		virtual void rotate(vec3 &by) = 0; // always rotate before translation
+		virtual bool calc_interception(const &ray, const nicefp &within_d, &intercetion out) = 0;
+		virtual void translate(const vec3 &by) = 0; // always translate after rotating
+		virtual void rotate(const vec3 &by) = 0; // always rotate before translation
 		virtual void scale(double factor) = 0;
 
 		virtual uv getuv(vec3 &position) = 0;
@@ -398,13 +398,13 @@ namespace geom {
 
 		
 
-		virtual void translate(vec &by) {
+		virtual void translate(const vec &by) override {
 
 			position+= by;
 		}
 
 
-		virtual void rotate(mat3 &by) { // don't rotate triangles unless to absolutely must 
+		virtual void rotate(const mat3 &by) override { // don't rotate triangles unless to absolutely must 
 
 			position.rotate(by);
 			point_b.rotate(by);
@@ -414,7 +414,7 @@ namespace geom {
 
 		}
 
-		virtual void scale(double factor) {
+		virtual void scale(double factor) override {
 
 			position *= factor;
 			side_a *= factor;
@@ -425,7 +425,7 @@ namespace geom {
 		}
 
 
-		virtual bool calc_interception(const &ray, const nicefp within_d, &interception out) override {
+		virtual bool calc_interception(const &ray, const nicefp &within_d, &interception out) override {
 
 			// this uses the Moller-Trumbore algorithm
 			// note i'm not doing backface culling, since I'll need to intersect with backfaces for refraction
@@ -503,7 +503,7 @@ namespace geom {
 		nicefp radius;
 
 
-		virtual sphere(vec3 acenter, vec3 orientationvec, nicefp amaxangle, nicefp aradius) { // maxangle in cos nicefps
+		virtual sphere(const vec3 acenter, vec3 orientationvec, nicefp amaxangle, nicefp aradius) { // maxangle in cos nicefps
 
 			center = acenter;
 			orientation = orientationvec;
@@ -512,19 +512,19 @@ namespace geom {
 		}
 
 
-		virtual vec3 get_normal(vec3 position) override {
+		virtual vec3 get_normal(const vec3 &position) override {
 
 			return (position - center) / radius; 
 
 		}
 
-		virtual void translate(vec &by) {
+		virtual void translate(const vec &by) {
 
 			center.translate(by);
 		}
 
 
-		virtual void rotate(vec3 &by) { 
+		virtual void rotate(const vec3 &by) { 
 
 			center.rotate(by);
 			orientationvec.rotate(by);
@@ -536,12 +536,12 @@ namespace geom {
 			radius *= scale;
 		}
 
-		vec3 get_normal(vec3 &position) { //centered on origin of sphere!!!
+		vec3 get_normal(const vec3 &position) { //centered on origin of sphere!!!
 
 			return (position - center) / radius; 
 		}
 
-		virtual bool interception calc_interception(const &ray, const nicefp within_d, &interception out) {
+		virtual bool interception calc_interception(const &ray, const nicefp &within_d, &interception out) {
 
 			// uses the algorithm on page 76 of Shirley and Marschner
 
@@ -596,7 +596,7 @@ namespace geom {
 			v_axis = av_axis / au_axis.norm();
 		}
 
-		virtual bool calc_interception(const &ray, const nicefp within_d, &interception out) {
+		virtual bool calc_interception(const &ray, const nicefp &within_d, &interception out) {
 
 			nicefp denom =ray.direction.dot(normal);
 			if (denom == 0) return false; //parralel to plane
@@ -610,19 +610,21 @@ namespace geom {
 		}
 
 
-		virtual void translate(vec &by) { // always translate after rotating
+		virtual void translate(const vec &by) { // always translate after rotating
 
 			center.translate(by);
 
 		}
-		virtual void rotate(vec3 &by) { // always rotate before translation
+		virtual void rotate(const vec3 &by) { // always rotate before translation
 
 			normal.rotate(by);
 			u_axis.rotate(by);
 			v_axis.rotate(by);
 		}
 
-		virtual uv getuv(vec3 &position) {
+		virtual void scale(double factor) {}; // do nothing
+
+		virtual uv getuv(const vec3 &position) {
 
 			vec3 deltap = position - center;
 
@@ -632,7 +634,7 @@ namespace geom {
 			return uv(u, v);
 		}
 
-		virtual vec3 get_normal(vec3 &position) {
+		virtual vec3 get_normal(const vec3 &position) {
 
 			return  normal;
 

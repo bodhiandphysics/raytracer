@@ -12,16 +12,20 @@ namespace geom {
 		nicefp operator- (const& nicefp other);
 		nicefp operator* (const& nicefp other);
 		nicefp operator/ (const& nicefp other);
+		nicefp operator+ (const& double other);
+		nicefp operator- (const& double other);
+		nicefp operator* (const& double other);
+		nicefp operator/ (const& double other);
 
 		bool operator< (const &nicefp other);
 		bool operator== (const nicefp other);
 
 	};
 
-	nicefp nicesqrt(nicefp x);
+	nicefp sqrt(nicefp x);
 
 	// calculate the negative exp of a nicecp;
-	nicefp nicenexp(nicefp x)l;
+	nicefp nicenexp(nicefp x);
 
 
 	struct vec3 {
@@ -30,23 +34,30 @@ namespace geom {
 		const nicefp y;
 		const nicefp z;
 
-		nicefp norm();
+		vec3(nicefp x, nicefp y, nicefp z);
+		vec3(double x, double y, double z);
+		vec3 mult(cons& vec3 other);
 
+
+		nicefp norm();
 		nicefp norm2();
+		vec3 normalize();
 		vec3 operator+ (const &vec3 other);
 		vec3 operator- (const &vec3 other);
 		bool operator== (const &vec3 other);
-		vec3 operator*(double mult);
-		vec3 operator/(double div);
+		vec3 operator*(const double mult);
+		vec3 operator/(const double div);
 
 		nicefp dot(const &vec3 other);
 
 		vec3 cross(const &vec3 other);
 
-		vec3 nexp(vec3 vec);
-		void translate(vec3 &by);
+		vec3 nexp(const &vec3 vec);
+		vec3 reflect(const&  vec3 &normal);
+		
+		void translate(cont vec3 &by);
 
-		void rotate(mat3 &rotation);
+		void rotate(const mat3 &rotation);
 		
 	};
 
@@ -54,25 +65,29 @@ namespace geom {
 
 		vec3 cols[3];
 
-		mat3(vec3 row1, vec3 row2, vec3 row3);
+		mat3(const vec3 &col1,const &vec3 col2,const vec3 &col3);
+		
 		mat3 transpose();
 
-		mat3 leftmult(mat3 &other);
+		mat3 leftmult(const mat3 &other);
 	};
 
 	
-	mat3 genrotz(nicefp theta);
+	mat3 genrotz(const nicefp theta);
 
-	mat3 genroty(nicefp theta);
+	mat3 genroty(const nicefp theta);
 
-	mat3 genrotx(nicefp theta); 
+	mat3 genrotx(const nicefp theta); 
 
 	struct ray {
 
 		vec3 origin;
 		vec3 direction; // should always be normalized;
 
-		ray(vec3 anorigin, vec3 unnormalized);
+		ray(const vec3 &anorigin, const vec3 &unnormalized);
+		ray reflect(const vec3 &point,const vec3 &normal);
+		bool refract(const vec3& point, const vec3& normal, const &nicefp inref_index, const &nicefp outref_index, ray& result);
+
 	};
 
 	struct interception {
@@ -80,6 +95,9 @@ namespace geom {
 		nicefp distance;
 		vec3 position; // vector from center of object to intercept point
 		vec3 normal;
+		uv uv;
+
+		interception(const nicefp &distance, const vec3 &position, const vec3 &normal, const uv &uv);
 	};
 
 	struct uv {
@@ -96,7 +114,10 @@ namespace geom {
 		virtual bool calc_interception(const &ray, const nicefp within_d, &intercetion out);
 		virtual void translate(vec &by); // always translate after rotating
 		virtual void rotate(vec3 &by); // always rotate before translation
+		virtual void scale(double factor);
 		virtual uv getuv(vec3 &position);
+		virtual vec3 get_normal(vec3 &position) = 0;
+
 
 	};
 
@@ -108,21 +129,19 @@ namespace geom {
 		uv uv_a, uv_b, uv_c;
 
 		vec3 normal;
+		nicefp area2;
+		nicefp area;
 
 		virtual triangle(vec3 aposition, vec3 aside_a, vec3 aside_b, uv uv_a, uv uv_b, uv uv_c);
-		virtual ~triangle() = default;
 
-		
-
-		virtual void translate(vec &by);
-
-
-		virtual void rotate(mat3 &by); 
+		virtual void translate(const vec3 &by);
+		virtual void rotate(const mat3 &by); 
+		virtual void scale(double factor);
 
 
 		virtual bool calc_interception(const &ray, const nicefp within_d, &interception out); 
 
-		uv getuv(vec3 &intersect);
+		uv getuv(const vec3 &intersect);
 	};
 	
 
@@ -136,18 +155,31 @@ namespace geom {
 		nicefp radius;
 
 
-		virtual sphere(vec3 acenter, vec3 orientationvec, nicefp amaxangle); 
+		virtual sphere(const vec3 acenter, vec3 orientationvec, nicefp amaxangle, nicefp aradius); 
 
-		virtual sphere(vec3 acenter, nicefp radius); 
-		virtual ~sphere() = default;
+		virtual vec3 get_normal(const vec3 &position); 
+		virtual void translate(const vec3 &by); 
 
-		virtual vec3 get_normal(vec3 position); 
-		virtual void translate(vec &by); 
+		virtual void rotate(const vec3 &by); 
 
-		virtual void rotate(vec3 &by); 
-
-		vec3 get_normal(vec3 position); 
+		vec3 get_normal(const vec3 &position); 
 
 		virtual bool interception calc_interception(const &ray, const nicefp within_d, &interception out); 
+	};
+
+	struct plane: shape {
+
+		vec3 center;
+		vec3 normal;
+		vec3 u_axis;
+		vec3 v_axis; 
+
+		virtual plane(vec3 acenter, vec3 anormal, vec3 au_axis, vec3 av_axis);
+		virtual bool calc_interception(const &ray, const nicefp &within_d, &interception out);
+		virtual void translate(const vec &by);
+		virtual void rotate(const vec3 &by);
+		virtual void scale(double factor);
+		virtual uv getuv(const vec3 &position);
+		virtual vec3 get_normal(const vec3 &position);
 	};
 }
