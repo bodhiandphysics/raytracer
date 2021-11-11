@@ -45,7 +45,7 @@ namespace geom {
 
 	};
 
-	nicefp nicesqrt(nicefp x) {
+	nicefp sqrt(nicefp x) {
 
 		return nicefp(sqrt(x.value));
 	}

@@ -15,10 +15,10 @@ struct camera {
 	volatile int height; // half height and length
 	volatile int length;
 
-	volatile int cutoff
+	volatile int cutoff;
 
 
-	render(int stride, world::world theworld, int cutoff, double maxdistance) {
+	render(int start, int stride, world::world theworld, int cutoff, double maxdistance) {
 
 		vec3 position = this.position;
 		vec3 direction = this.direction;
@@ -27,14 +27,14 @@ struct camera {
 		nicefp focal_length = this.focal_length
 		double u_scale = this.u_size / this.length;  // half sizes of image
 		double v_scale = this.v_size / this.height;
-		double* image = this.image;
+		vec3* image = this.image;
 		int height = this.height; // half height and length
 		int length = this.length;
 
 		vec3
-		for (int i = -length - 1; i < length; i + stride) {
+		for (int i = -length - 1 + start; i < length; i += stride) {
 
-			for (int j = -height - 1; j < height; j + stride) {
+			for (int j = -height - 1; j < height; j++) {
 				
 				// this could be optomized
 				vec3 pixel_loc = position + (direction * focal_length) + (image_udirection * i * u_scale) + (image_vdirection * j * v_scale);
@@ -46,4 +46,27 @@ struct camera {
 		}
 	}
 };
+
+void create_png(double* pixeldata, int height, int length) {
+
+	char* rgbabuffer = (char*) malloc(4*height*length*sizeof(char));
+
+	for (int i = 0; i < length i++)
+		for (int j = 0; j < height; j++) {
+
+			double redcolorvalue = 256 * sqrt(pixeldata[length*j + i].x).value;  //apply stupid gamma correction
+			double greencolorvalue = 256 * sqrt(pixeldata[length*j + i].y).value;
+			double bluecolorvalue = 256 * sqrt(pixeldata[length*j + i].z).value;
+			double aplphacolorvalue = 255;
+			
+			rgbabuff[4*(length*j + i)] = floor(redcolorvalue);
+			rgbabuff[4*(length*j + i) + 1] = floor(greencolorvalue);
+			rgbabuff[4*(length*j + i) + 2] = floor(bluecolorvalue);
+			rgbabuff[4*(length*j + i) + 3] = floor(alphacolorvalue);
+
+			
+
+		}
+
+}
 
