@@ -1,3 +1,9 @@
+#include "nicefp.h"
+#include "vec3.h"
+#include "mat3.h"
+#include "ray.h"
+
+
 namespace geom {	
 
 	struct uv {
@@ -5,7 +11,10 @@ namespace geom {
 		nicefp u;
 		nicefp v;
 
+		uv() = default;
 		uv(nicefp au, nicefp av);
+		uv(double au, double av);
+
 
 	};
 
@@ -21,37 +30,33 @@ namespace geom {
 
 	struct shape { 
 
-		virtual bool calc_interception(const ray& theray, const nicefp within_d, interception& out);
-		virtual void translate(vec3 &by); // always translate after rotating
-		virtual void rotate(vec3 &by); // always rotate before translation
-		virtual void scale(double factor);
+		virtual bool calc_interception(ray& theray, const nicefp within_d, interception& out);
+		virtual void translate(const vec3 &by); // always translate after rotating
+		virtual void rotate(const mat3 &by); // always rotate before translation
+		virtual void scale(const vec3 &by);
 		virtual uv getuv(vec3 &position);
-		virtual vec3 get_normal(vec3 &position) = 0;
+		virtual vec3 get_normal(const vec3 &position);
 
 
 	};
 
 	struct triangle: shape {
 
-		vec3 point_a;
-		vec3 point_b;
-		vec3 point_c;
+		vec3 position;
+		vec3 side_a;
+		vec3 side_b;
 		uv uv_a, uv_b, uv_c;
-
 		vec3 normal;
-		nicefp area2;
 		nicefp area;
 
-		triangle(vec3 aposition, vec3 aside_a, vec3 aside_b, uv uv_a, uv uv_b, uv uv_c);
+		triangle(vec3 aposition, vec3 aside_a, vec3 aside_b, vec3 anormal, uv uv_a, uv uv_b, uv uv_c);
 
-		virtual void translate(const vec3 &by);
-		virtual void rotate(const mat3 &by); 
-		virtual void scale(double factor);
-
-
-		virtual bool calc_interception(const ray& theray, const nicefp within_d, interception& out); 
-
-		uv getuv(const vec3 &intersect);
+		virtual void translate(const vec3 &by) override;
+		virtual void rotate(const mat3 &by) override; 
+		virtual void scale(const vec3 &by) override;
+		virtual bool calc_interception(ray& theray, const nicefp within_d, interception& out) override; 
+		virtual uv getuv(vec3 &intersect) override;
+		virtual vec3 get_normal(const vec3 &position) override; 
 	};
 	
 
@@ -68,12 +73,12 @@ namespace geom {
 
 		sphere(const vec3 acenter, vec3 orientationvec, vec3 orientation_equatorvec, nicefp amaxangle, nicefp aradius); 
 
-		virtual vec3 get_normal(const vec3 &position); 
-		virtual void translate(const vec3 &by); 
-
-		virtual void rotate(const vec3 &by); 
-
-		virtual bool calc_interception(const ray& theray, const nicefp within_d, interception& out); 
+		virtual vec3 get_normal(const vec3 &position) override; 
+		virtual uv getuv(vec3 &position) override;
+		virtual void translate(const vec3 &by) override; 
+		virtual void rotate(const mat3 &by) override; 
+		virtual void scale(const vec3 &by) override;
+		virtual bool calc_interception(ray& theray, const nicefp within_d, interception& out) override;
 	};
 
 	struct plane: shape {
@@ -84,12 +89,12 @@ namespace geom {
 		vec3 v_axis; 
 
 		plane(vec3 acenter, vec3 anormal, vec3 au_axis, vec3 av_axis);
-		virtual bool calc_interception(const ray& theray, const nicefp &within_d, interception& out);
-		virtual void translate(const vec3 &by);
-		virtual void rotate(const vec3 &by);
-		virtual void scale(double factor);
-		virtual uv getuv(const vec3 &position);
-		virtual vec3 get_normal(const vec3 &position);
+		virtual bool calc_interception(ray& theray, const nicefp within_d, interception& out) override;
+		virtual void translate(const vec3 &by) override;
+		virtual void rotate(const mat3 &by) override;
+		virtual void scale(const vec3 &by) override;
+		virtual uv getuv(vec3 &position) override;
+		virtual vec3 get_normal(const vec3 &position) override;
 	};
 
 }
