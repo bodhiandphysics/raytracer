@@ -1,4 +1,6 @@
+
 #pragma once
+#include "nicefp.h"
 
 
 namespace geom {
@@ -12,6 +14,7 @@ namespace geom {
 
 		vec3(nicefp x, nicefp y, nicefp z);
 		vec3(double x, double y, double z);
+		vec3() = default;
 		vec3 mult(const vec3& other);
 
 

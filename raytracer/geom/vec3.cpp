@@ -26,7 +26,7 @@ namespace geom {
 
 	nicefp vec3::norm() { // the length of the vector
 
-		return sqrt(x*x + y*y + z*z);
+		return nicesqrt(x*x + y*y + z*z);
 	}
 
 	nicefp vec3::norm2() { // the norm without the sqrt, to avoid slow ops

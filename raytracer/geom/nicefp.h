@@ -28,7 +28,7 @@ namespace geom{
 
 	};
 
-	nicefp sqrt(nicefp x);
+	nicefp nicesqrt(nicefp x);
 
 	// calculate the negative exp of a nicecp;
 	nicefp nicenexp(nicefp x);

@@ -11,6 +11,7 @@ namespace geom {
 	}
 
 
+
 	nicefp nicefp::operator+ (const nicefp& other) {return nicefp((value + other.value));}
 	nicefp nicefp::operator- (const nicefp& other) {return nicefp((value - other.value));}
 	nicefp nicefp::operator- () {return nicefp(-value);}
@@ -38,7 +39,7 @@ namespace geom {
 		return false;
 	}
 
-	nicefp sqrt(nicefp x) {
+	nicefp nicesqrt(nicefp x) {
 
 		return nicefp(sqrt(x.value));
 	}

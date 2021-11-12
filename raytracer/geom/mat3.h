@@ -14,13 +14,13 @@ namespace geom {
 		
 		mat3 transpose();
 
-		mat3 leftmult(const mat3 &other);
+		mat3 leftmult(const mat3& other);
 	};
 
 	
-	mat3 genrotz(const nicefp theta);
+	mat3 genrotz(const nicefp& theta);
 
-	mat3 genroty(const nicefp theta);
+	mat3 genroty(const nicefp& theta);
 
-	mat3 genrotx(const nicefp theta); 
+	mat3 genrotx(const nicefp& theta); 
 }
