@@ -19,6 +19,8 @@ namespace geom{
 		nicefp operator- (const double other);
 		nicefp operator* (const double other);
 		nicefp operator/ (const double other);
+		nicefp operator+=(const nicefp& other);
+		nicefp operator+=(const double other);
 		nicefp operator-();
 
 		bool operator< (const nicefp& other);

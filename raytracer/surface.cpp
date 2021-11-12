@@ -1,193 +1,105 @@
-#include <geom.h>
-#include <math.h>
-#include <unistd.h>
+#include "surface.h"
+#include <algorithm>
 
-namespace surf {
+namespace surf{
+	
+	light::light(color alightcolor, geom::vec3 aposition, geom::vec3 adirection) {
 
-	using color as vec3;
-
-	struct material {
-
-		bool doesrefract = true;
-		bool doesambient = true;
-		bool doeslambert = true;
-		bool doestransmit = true;
-		bool doesfresnel = true;
-		bool doesreflect = false;
-
-		vec3 beerfactor = vec3(0,0,0);
-		nicefp refract_index = 1;
+	lightcolor = alightcolor;
+	position = aposition;
+	direction = adirection.normalize();
+	}
 
 
-		virtual color materialcolor(const uv &location) {return vec3(0,0,0);}
-		virtual color ambient(const uv &location) {return vec3(0,0,0);} 
-		virtual color diffuse(uv location) {return vec3(0,0,0);}
-		virtual color specular(uv location) {return vec3(0,0,0);}
-		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal) {return vec3(0,0,0);} //assume linear optics
-		
 
-	};
+	template<class SHAPE>
+	surface::surface(const SHAPE &ashape, const material* insidemat, const material* outsidemat) {
 
-	struct light {
+		SHAPE* theshape = (SHAPE*) malloc(sizeof(SHAPE));
 
-		color color;
-		vec3 position
-		vec3 direction;
+		*theshape = ashape;
 
-		light(color color, vex3 position, vec3 direction) {
-
-		this.color = color;
-		this.position = position;
-		this.direction = direction.normalize();
-		}
-
-	};
-
-	struct surface {
-
-		const shape* shape;
-		material* inside;
-		material* outside;
-
-		template<class SHAPE>
-		surface(const SHAPE &ashape, const material* insidemat, const material* outsidemat) {
-
-			SHAPE* theshape = (SHAPE*) malloc(sizeof(SHAPE));
-
-			*theshape = ashape;
-
-			this.shape = theshape;
-			inside = insidemat;
-			outside = outsidemat;
-
-		}
-
-		~surface() {
-
-			free(shape);
-		}
-
-	};
-
-	struct openspace: material{
-
-		bool doesrefract = true;
-		bool doesambient = false;
-		bool doeslambert = false;
-		bool doestransmit = true;
-		bool doesfresnel = true;
-		bool doesreflect = false;
+		shape = theshape;
+		inside = insidemat;
+		outside = outsidemat;
 
 	}
 
-	struct phong: material {
+	surface::~surface() {
 
-		bool doesrefract = false;
-		bool doesambient = true;
-		bool doeslambert = true;
-		bool doestransmit = false;
-		bool doesfresnel = false;
-		bool doesreflect = true;
-
-		virtual color shiny(uv uv) = 0;
-
-		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal) final { // 
-
-			vec3 diff = diffuse(uv);
-			color retcolor(0, 0, 0);
-
-			double lambfactor = max(0, (normal.dot(tolight)).value);
-			retcolor.x += diff.x * lambfactor;
-			retcolor.y += diff.y * lambfactor;
-			retcolor.z += diff.z * lambfactor; 
-			vec3 spec = specular(uv);
-			vec3 shin = shiny(uv);
-
-			vec3 halfvector = (tolight - fromeye).normalize();
-			double phongfactor = max(0, normal.dot(halfvector));
-			retcolor.x += nicefp(pow(phongfactor, shin.x.value)) * spec.x;
-			retcolor.y += nicefp(pow(phongfactor, shin.x.value)) * spec.y;
-			retcolor.z += nicefp(pow(phongfactor, shin.x.value)) * spec.z;
-
-			return retcolor;
-		}
-
-	};
+		free(shape);
+	}
 
 
-	struct lambert: material {
-
-		bool doesrefract = false;
-		bool doesambient = true;
-		bool doeslambert = true;
-		bool doestransmit = false;
-		bool doesfresnel = false;
-		bool doesreflect = false;
 
 
-		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal) final {
+	color phong::bdfrfactor(const geom::uv &uv,  geom::vec3 &tolight, const geom::vec3 &fromeye, geom::vec3 &normal) { // 
 
-			vec3 df = diffuse(uv);
-			color retcolor(0, 0, 0);
+		geom::vec3 diff = diffuse(uv);
+		color retcolor(0, 0, 0);
 
-			double lambfactor = max(0, (normal.dot(tolight)).value);
-			retcolor.x += diff.x * lambfactor;
-			retcolor.y += diff.y * lambfactor;
-			retcolor.z += diff.z * lambfactor; 
+		double lambfactor = std::max(0.0, (normal.dot(tolight)).value);
+		retcolor.x += diff.x * lambfactor;
+		retcolor.y += diff.y * lambfactor;
+		retcolor.z += diff.z * lambfactor; 
+		geom::vec3 spec = specular(uv);
+		geom::vec3 shin = shiny(uv);
 
-			return retcolor;
-		}
+		geom::vec3 halfvector = (tolight - fromeye).normalize();
+		double phongfactor = std::max(0.0, normal.dot(halfvector).value);
+		retcolor.x += geom::nicefp(pow(phongfactor, shin.x.value)) * spec.x;
+		retcolor.y += geom::nicefp(pow(phongfactor, shin.x.value)) * spec.y;
+		retcolor.z += geom::nicefp(pow(phongfactor, shin.x.value)) * spec.z;
 
-
-	};
-
-	struct dialectric: material { //dialectrics have no lambert, but do have a shinyness from fresnel; assume all dialectrics' color comes from refraction
-
-		bool doesrefract = true;
-		bool doesambient = false;
-		bool doeslambert = false;
-		bool doestransmit = true;
-		bool doesfresnel = true;
-		bool doesreflect = true;
-
-		virtual color shiny(uv uv) override = 0;
-
-		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal) final {
-
-			vec3 shin = shiny(uv);
-			color retcolor(0,0,0);
-
-			vec3 halfvector = (tolight - fromeye).normalize();
-			double phongfactor = max(0, normal.dot(halfvector));
-			retcolor.x = nicefp(pow(phongfactor, shin.x.value));
-			retcolor.y = nicefp(pow(phongfactor, shin.y.value));
-			retcolor.z = nicefp(pow(phongfactor, shin.z.value));
-
-			return retcolor;
-
-		}
-
-	};
-
-	struct mirror: material {
-
-		bool doesrefract = false;
-		bool doesambient = false;
-		bool doeslambert = false;
-		bool doestransmit = false;
-		bool doesfresnel = false;
-		bool doesreflect = true;
+		return retcolor;
+	}
 
 
-		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal) final {
-
-			return specular(uv); // assume a phong exponent of infinity
 
 
-		}
+
+	color lambert::bdfrfactor(const geom::uv &uv, geom::vec3 &tolight, const geom::vec3 &fromeye, geom::vec3 &normal)  {
+
+		geom::vec3 diff = diffuse(uv);
+		color retcolor(0, 0, 0);
+
+		double lambfactor = std::max(0.0, (normal.dot(tolight)).value);
+		retcolor.x += diff.x * lambfactor;
+		retcolor.y += diff.y * lambfactor;
+		retcolor.z += diff.z * lambfactor; 
+
+		return retcolor;
+	}
 
 
-	};
+
+
+		
+	color dialectric::bdfrfactor(const geom::uv &uv, geom::vec3 &tolight, const geom::vec3 &fromeye, geom::vec3 &normal) {
+
+		geom::vec3 shin = shiny(uv);
+		color retcolor(0,0,0);
+
+		geom::vec3 halfvector = (tolight - fromeye).normalize();
+		double phongfactor = std::max(0.0, normal.dot(halfvector).value);
+		retcolor.x = geom::nicefp(pow(phongfactor, shin.x.value));
+		retcolor.y = geom::nicefp(pow(phongfactor, shin.y.value));
+		retcolor.z = geom::nicefp(pow(phongfactor, shin.z.value));
+
+		return retcolor;
+
+	}
+
+
+	
+
+	color mirror::bdfrfactor(const geom::uv &uv, geom::vec3 &tolight, const geom::vec3 &fromeye, geom::vec3 &normal) {
+
+		return specular(uv); // assume a phong exponent of infinity
+
+
+	}
+
 
 }
 

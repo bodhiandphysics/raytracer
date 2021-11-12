@@ -1,6 +1,12 @@
+#pragma once
+#include <math.h>
+#include <unistd.h>
+#include "geom/shape.h"
+#include "geom/vec3.h"
+
 namespace surf {
 
-	using color as vec3;
+	using color = geom::vec3;
 
 	struct material {
 
@@ -11,14 +17,14 @@ namespace surf {
 		bool doesfresnel = true;
 		bool doesreflect = false;
 
-		vec3 beerfactor = vec3(0,0,0);
-		nicefp refract_index = 1;
+		geom::vec3 beerfactor = geom::vec3(0,0,0);
+		geom::nicefp refract_index = 1;
 
-		virtual color materialcolor(const uv &location);
-		virtual color ambient(const uv &location);
-		virtual color diffuse(const uv &location);
-		virtual color specular(const uv &location);
-		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal);
+		virtual color materialcolor(const geom::uv &location);
+		virtual color ambient(const geom::uv &location);
+		virtual color diffuse(const geom::uv &location);
+		virtual color specular(const geom::uv &location);
+		virtual color bdfrfactor(const geom::uv &uv, geom::vec3 &tolight, const geom::vec3 &fromeye, geom::vec3 &normal);
 
 
 
@@ -26,17 +32,17 @@ namespace surf {
 
 	struct light {
 
-		color color;
-		vec3 position
-		vec3 direction;
+		color lightcolor;
+		geom::vec3 position;
+		geom::vec3 direction;
 
-		light(color color, vex3 position, vec3 direction);
+		light(color lightcolor, geom::vec3 position, geom::vec3 direction);
 
 	};
 
 	struct surface {
 
-		const shape* shape;
+		geom::shape* shape;
 		material* inside;
 		material* outside;
 
@@ -54,9 +60,9 @@ namespace surf {
 		bool doesfresnel = false;
 		bool doesreflect = true;
 
-		virtual color shiny(uv uv);
+		virtual color shiny(geom::uv uv);
 
-		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal) final;
+		virtual color bdfrfactor(const geom::uv &uv,  geom::vec3 &tolight, const geom::vec3 &fromeye, geom::vec3 &normal) final;
 
 	};
 
@@ -70,7 +76,7 @@ namespace surf {
 		bool doesreflect = false;
 
 
-		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal) final;
+		virtual color bdfrfactor(const geom::uv &uv, geom::vec3 &tolight, const geom::vec3 &fromeye, geom::vec3 &normal) final;
 
 	};
 
@@ -83,9 +89,9 @@ namespace surf {
 		bool doesfresnel = true;
 		bool doesreflect = true;
 
-		virtual color shiny(uv uv);
+		virtual color shiny(geom::uv uv);
 
-		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal) final;
+		virtual color bdfrfactor(const geom::uv &uv,  geom::vec3 &tolight, const geom::vec3 &fromeye, geom::vec3 &normal) final;
 
 	};
 
@@ -99,7 +105,7 @@ namespace surf {
 		bool doesreflect = true;
 
 
-		virtual color bdfrfactor(const uv &uv, const vec3 &tolight, const vec3 &fromeye, const vec3 &normal) final;
+		virtual color bdfrfactor(const geom::uv &uv,  geom::vec3 &tolight, const geom::vec3 &fromeye, geom::vec3 &normal) final;
 	};
 }
 
