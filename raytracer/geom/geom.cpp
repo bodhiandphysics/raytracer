@@ -8,8 +8,10 @@
 namespace geom {
 
 // basic geometry routines
+	
+	struct nicefp {
 
-		
+		// wrapper for doubles to avoid mistakes made in fp comparison
 
 		nicefp(double avalue) {
 
