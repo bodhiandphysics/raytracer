@@ -5,9 +5,9 @@ namespace surf{
 	
 	light::light(color alightcolor, geom::vec3 aposition, geom::vec3 adirection) {
 
-	lightcolor = alightcolor;
-	position = aposition;
-	direction = adirection.normalize();
+		lightcolor = alightcolor;
+		position = aposition;
+		direction = adirection.normalize();
 	}
 
 
@@ -15,11 +15,9 @@ namespace surf{
 	template<class SHAPE>
 	surface::surface(const SHAPE &ashape, const material* insidemat, const material* outsidemat) {
 
-		SHAPE* theshape = (SHAPE*) malloc(sizeof(SHAPE));
+		shape = (SHAPE*) malloc(sizeof(SHAPE));
 
-		*theshape = ashape;
-
-		shape = theshape;
+		*shape = ashape;
 		inside = insidemat;
 		outside = outsidemat;
 

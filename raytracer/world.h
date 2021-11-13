@@ -1,13 +1,15 @@
+#pragma once
 #include <surface.h>
 #include <vector>
+#include <renderer.h>
 
 namespace world {
 
 	static const surf::openspace OPENSPACE;
 
 	using color = geom::vec3;
-	using geom
-	using surf
+	using namespace geom
+	using namespace surf
 
 
 	struct surfacegroup {
@@ -42,9 +44,11 @@ namespace world {
 
 		std::vector<surf::surface*> surfaces; 
 		std::vector<surf::light*> lights;
+		camera::camera *thecamera;
+		
 		color ambientlight;
 
-		world(color lightcolor);
+		world(camera::camera* thecamera, color lightcolor);
 
 		~world();
 

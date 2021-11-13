@@ -1,38 +1,35 @@
-#pragma once 
-namespace geom{
+#pragma once
+namespace geom {
 
-	double constexpr FPCUTOFF = .000001;
-	
-	struct nicefp {
+double constexpr FPCUTOFF = .000001;
 
-		double value;
+struct nicefp {
 
-		nicefp(double avalue);
+  double value;
 
-		nicefp() = default;
+  nicefp(double avalue);
 
-		nicefp operator+ (const nicefp& other);
-		nicefp operator- (const nicefp& other);
-		nicefp operator* (const nicefp& other);
-		nicefp operator/ (const nicefp& other);
-		nicefp operator+ (const double other);
-		nicefp operator- (const double other);
-		nicefp operator* (const double other);
-		nicefp operator/ (const double other);
-		nicefp operator+=(const nicefp& other);
-		nicefp operator+=(const double other);
-		nicefp operator-();
+  nicefp() = default;
 
-		bool operator< (const nicefp& other);
-		bool operator== (const nicefp& other);
+  nicefp operator+(const nicefp &other);
+  nicefp operator-(const nicefp &other);
+  nicefp operator*(const nicefp &other);
+  nicefp operator/(const nicefp &other);
+  nicefp operator+(const double other);
+  nicefp operator-(const double other);
+  nicefp operator*(const double other);
+  nicefp operator/(const double other);
+  nicefp operator+=(const nicefp &other);
+  nicefp operator+=(const double other);
+  nicefp operator-();
 
-		
+  bool operator<(const nicefp &other);
+  bool operator==(const nicefp &other);
+};
 
-	};
+nicefp nicesqrt(nicefp x);
 
-	nicefp nicesqrt(nicefp x);
+// calculate the negative exp of a nicecp;
+nicefp nicenexp(nicefp x);
 
-	// calculate the negative exp of a nicecp;
-	nicefp nicenexp(nicefp x);
-
-}
+} // namespace geom

@@ -35,6 +35,7 @@ namespace world {
 	void surfacegroup::envelop(surfacegroup& other) { // make sure other is actually inside of this surface!!
 
 		other.outside = inside; 
+		for (surf::surface* asurface : other.surfaces) asurface->outside = inside;
 	}
 
 
@@ -76,11 +77,11 @@ namespace world {
 
 	
 
-	world::world(color lightcolor) {
+	world::world(camera::camera* thecamera, color lightcolor) {
 
 		surfaces = std::vector<surf::surface*>()
 		lights = std::vector<surf::light>();
-
+		this->thecamera = thecamera;
 		ambientlight = lightcolor;
 
 	}
@@ -88,6 +89,7 @@ namespace world {
 	world::~world() {
 
 		for (surf::surace* surface: surfaces) delete surface;
+		delete thecamera;
 	}
 
 
