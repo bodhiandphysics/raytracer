@@ -1,22 +1,16 @@
+#include "raytrace.h"
+
 namespace raytrace {
 
-	using color = vec3;
+	
 
+	rayoflight::rayoflight(ray theray, nicefp n, nicefp beer) {
 
-	struct rayoflight {
+		ray = theray;
+		currentn = n;
+		currentbeer = beer;	
+	}
 
-		geom::ray ray;
-		nicefp currentn;
-		vec3 currentbeer;
-
-		rayoflight(ray theray, nicefp n, nicefp beer) {
-
-			ray = theray;
-			currentn = n;
-			currentbeer = beer;	
-		}
-
-	};
 
 
 
@@ -48,7 +42,7 @@ namespace raytrace {
 		while ((surf::surface* next_surface = find_next_surface(theray, theworld, intercept)) != nullptr) {
 
 			material* next_material;
-			if (theray.ray.direction.dot(intercept.normal) < 0) *next_material = &next_surface->inside;
+			if (theray.theray.direction.dot(intercept.normal) < 0) *next_material = &next_surface->inside;
 			else *next_material = &next_surface->outside;
 
 			if (!next_material->doestransmit) return color(0,0,0); // we hit an opaque surface
@@ -57,7 +51,7 @@ namespace raytrace {
 
 			if (nextn < currentn) {
 
-				nicefp ddotn = theray.ray.direction.dot(intercept.normal);
+				nicefp ddotn = theray.theray.direction.dot(intercept.normal);
 				if (ddotn*ddotn < ((currentn*currentn) / (nextn*nextn)) - 1 )
 					return color(0,0,0); 					// Total internal reflection
 			}
@@ -84,7 +78,7 @@ namespace raytrace {
 		geom::interception intercept(maxdistance, vec3(0,0,0), vec3(0,0,0));
 
 		surf::surface* next_surface = find_next_surface(theray, theworld, intercept);
-		if (next_surface == nullptr) return theworld.getbgcolor(theray.ray); // we went off the map
+		if (next_surface == nullptr) return theworld.getbgcolor(theray.theray); // we went off the map
 		
 
 		surf::material* next_material;
@@ -112,7 +106,7 @@ namespace raytrace {
 								nicefp(0)); // start each shadowray with new beerfactor
 
 			color shadowlightcolor = cast_to_light(shadowray, theworld, thelight);
-			color += next_material->bdfrfactor(uv, shadowray.ray.direction, theray.ray.direction, intercept.normal).mult(shadowlightcolor); 
+			color += next_material->bdfrfactor(uv, shadowray.theray.direction, theray.theray.direction, intercept.normal).mult(shadowlightcolor); 
 		}
 
 		// next handle reflections
@@ -128,7 +122,7 @@ namespace raytrace {
 		nicefp fresnelterm = 1;
 		if (next_material->doesfresnel) { 
 			double schlickt1 = pow(((next_material->refract_index - theray.currentn) / (next_material->refract_index + theray.currentn)).value, 2);
-			double costheta = reflectray.ray.direction.dot(next_material.normal).value;
+			double costheta = reflectray.theray.direction.dot(next_material.normal).value;
 			double schlick = schlickt1 + (1-schlickt1)*pow((1- costheta), 5);
 			fresnelterm = nicefp(shlick);
 		}
@@ -140,7 +134,7 @@ namespace raytrace {
 
 
 		
-		geom::ray refractray;
+		ray refractray;
 		color refractlightcolor = vec3(0,0,0);
 
 		bool didrefract = geom::refract(intercept.position, intercept.normal, next_material->refract_index, theray.currentn, refractray);

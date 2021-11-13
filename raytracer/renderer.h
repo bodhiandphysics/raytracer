@@ -1,3 +1,6 @@
+#include "geom/surface"
+#include "theworld.h"
+
 struct camera {
 
 
@@ -16,7 +19,7 @@ struct camera {
 	volatile int cutoff;
 
 
-	void render(int start, int stride, world::world theworld, int cutoff, double maxdistance);
+	void render(int start, int stride, world::world &theworld, int cutoff, double maxdistance);
 
 };
 	
