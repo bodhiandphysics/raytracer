@@ -14,14 +14,14 @@ template <class SHAPE>
 surface::surface(const SHAPE &ashape, const material *insidemat,
                  const material *outsidemat) {
 
-  shape = (SHAPE *)malloc(sizeof(SHAPE));
+  shape = new SHAPE;
 
   *shape = ashape;
   inside = insidemat;
   outside = outsidemat;
 }
 
-surface::~surface() { free(shape); }
+surface::~surface() { delete shape;}
 
 color phong::bdfrfactor(const geom::uv &uv, geom::vec3 &tolight,
                         const geom::vec3 &fromeye, geom::vec3 &normal) { //

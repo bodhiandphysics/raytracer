@@ -20,12 +20,16 @@ struct material {
   geom::vec3 beerfactor = geom::vec3(0, 0, 0);
   geom::nicefp refract_index = 1;
 
-  virtual color materialcolor(const geom::uv &location);
-  virtual color ambient(const geom::uv &location);
-  virtual color diffuse(const geom::uv &location);
-  virtual color specular(const geom::uv &location);
+  virtual color materialcolor(const geom::uv &location) {return color(0,0,0);}
+  virtual color ambient(const geom::uv &location) {return color(0,0,0);}
+  virtual color diffuse(const geom::uv &location) {return color(0,0,0);}
+  virtual color specular(const geom::uv &location) {return color(0,0,0);}
   virtual color bdfrfactor(const geom::uv &uv, geom::vec3 &tolight,
-                           const geom::vec3 &fromeye, geom::vec3 &normal);
+                           const geom::vec3 &fromeye, geom::vec3 &normal) {return color(0,0,0);}
+};
+
+struct openspace : material {
+
 };
 
 struct light {
@@ -37,13 +41,13 @@ struct light {
   light(color lightcolor, geom::vec3 position, geom::vec3 direction);
 };
 
+template<class SHAPE>
 struct surface {
 
   geom::shape *shape;
   material *inside;
   material *outside;
 
-  template <class SHAPE>
   surface(const SHAPE &ashape, const material *insidemat,
           const material *outsidemat);
   ~surface();

@@ -1,12 +1,20 @@
-#include "geom/surface"
-#include "theworld.h"
+#pragma once
+#include "surface.h"
+#include "world.h"
+
+namespace world {
+
+  struct world;
+}
 namespace camera {
-using namespace geom struct camera {
+using namespace geom; 
+struct camera {
 
   volatile vec3 position;
   volatile vec3 direction;
   volatile vec3 image_udirection;
-  volatile vec3 image_vdirection volatile nicefp focal_length;
+  volatile vec3 image_vdirection; 
+  volatile nicefp focal_length;
   volatile nicefp u_size; // half sizes of image
   volatile nicefp v_size;
   volatile double *image;
