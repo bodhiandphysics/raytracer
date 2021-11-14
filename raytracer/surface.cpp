@@ -3,11 +3,12 @@
 
 namespace surf {
 
-light::light(color alightcolor, geom::vec3 aposition, geom::vec3 adirection) {
+light::light(color alightcolor, geom::vec3 aposition, geom::vec3 adirection, nicefp min_cos_angle) {
 
   lightcolor = alightcolor;
   position = aposition;
   direction = adirection.normalize();
+  this->min_cos_angle = min_cos_angle;
 }
 
 template <class SHAPE>

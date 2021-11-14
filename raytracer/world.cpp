@@ -3,9 +3,9 @@
 
 namespace world {
 
-template <class SHAPE> void surfacegroup::addshape(SHAPE theshape) {
+template <class SHAPETYPE> void surfacegroup::addshape(SHAPE theshape) {
 
-  surf::surface<SHAPE>* thesurface = new surf::surface(theshape, inside, outside);
+  surf::surface<SHAPTYPE>* thesurface = new surf::surface(theshape, inside, outside);
   surfaces.push_back((surf::surface<shape>*) thesurface);
 }
 

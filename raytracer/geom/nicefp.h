@@ -24,6 +24,7 @@ struct nicefp {
   nicefp operator-();
 
   bool operator<(const nicefp &other);
+  bool operator>(const nicefp &other);
   bool operator==(const nicefp &other);
 };
 

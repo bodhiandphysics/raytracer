@@ -34,6 +34,14 @@ bool nicefp::operator<(const nicefp &other) {
   return false;
 }
 
+bool nicefp::operator<(const nicefp &other) {
+
+  double difference = value - other.value;
+  if (difference > FPCUTOFF)
+    return true;
+  return false;
+}
+
 bool nicefp::operator==(const nicefp &other) {
 
   double difference = value - other.value;

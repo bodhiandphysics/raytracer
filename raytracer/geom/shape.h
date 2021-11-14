@@ -22,8 +22,8 @@ struct interception {
   vec3 normal;
   uv atuv;
 
-  interception(const nicefp &distance, const vec3 &position, const vec3 &normal,
-               const uv &uv);
+  interception(const nicefp distance, const vec3 position, const vec3 normal,
+               const uv uv);
 };
 
 struct shape {

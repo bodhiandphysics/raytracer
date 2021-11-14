@@ -7,6 +7,7 @@
 namespace surf {
 
 using color = geom::vec3;
+using namespace geom;
 
 struct material {
 
@@ -37,8 +38,9 @@ struct light {
   color lightcolor;
   geom::vec3 position;
   geom::vec3 direction;
+  geom::nicefp min_cos_angle;
 
-  light(color lightcolor, geom::vec3 position, geom::vec3 direction);
+  light(color lightcolor, geom::vec3 position, geom::vec3 direction, nicefp min_cos_angle);
 };
 
 template<class SHAPE>

@@ -1,7 +1,13 @@
 #pragma once
 #include "surface.h"
 #include "world.h"
-
+#include "world.h"
+#include "stb_image_write.h"
+#include <stdio.h>
+#include <thread>
+#include <vector>
+#include <iostream>
+#include "raytrace.h"
 namespace world {
 
   struct world;
@@ -10,19 +16,19 @@ namespace camera {
 using namespace geom; 
 struct camera {
 
-  volatile vec3 position;
-  volatile vec3 direction;
-  volatile vec3 image_udirection;
-  volatile vec3 image_vdirection; 
-  volatile nicefp focal_length;
-  volatile nicefp u_size; // half sizes of image
-  volatile nicefp v_size;
-  volatile double *image;
+   vec3 position;
+   vec3 direction;
+   vec3 image_udirection;
+   vec3 image_vdirection; 
+   nicefp focal_length;
+   nicefp u_size; // half sizes of image
+   nicefp v_size;
+   vec3 *image;
 
-  volatile int height; // half height and length
-  volatile int width;
+   int height; // half height and length
+   int width;
 
-  volatile int cutoff;
+   int cutoff;
 
   camera(vec3 position, vec3 direction, vec3 image_udirection,
          vec3 image_vdirection, nicefp focal_length, nicefp u_size,
@@ -33,7 +39,7 @@ struct camera {
               double maxdistance);
 
 private:
-  void redertask(int start, int stride, world::world &theworld, int cutoff,
+  void rendertask(int start, int stride, world::world &theworld, int cutoff,
                  double maxdistance);
 };
 

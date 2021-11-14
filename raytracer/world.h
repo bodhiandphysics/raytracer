@@ -3,6 +3,12 @@
 #include "surface.h"
 #include <vector>
 
+namespace camera {
+
+  struct camera;
+
+}
+
 namespace world {
 
 static surf::openspace OPENSPACE;
