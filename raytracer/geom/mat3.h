@@ -1,6 +1,7 @@
 #pragma once
 #include "nicefp.h"
 #include "vec3.h"
+#include <math.h>
 
 namespace geom {
 
@@ -12,7 +13,7 @@ struct mat3 {
 
   mat3 transpose();
 
-  mat3 leftmult(const mat3 &other);
+  mat3 leftmult(mat3 &other);
 };
 
 mat3 genrotz(const nicefp &theta);

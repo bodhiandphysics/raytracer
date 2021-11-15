@@ -4,15 +4,15 @@
 
 namespace raytrace {
 
-surf::surface<shape> *find_next_surface(geom::ray &theray,
+surf::surface *find_next_surface(geom::ray &theray,
                                  world::world theworld,
                                  geom::interception &intercept,
                                  nicefp maxdistance) {
   nicefp cutoff = maxdistance;
-  surf::surface<shape> *retsurf = nullptr;
+  surf::surface *retsurf = nullptr;
   bool didintercept;
 
-  for (surf::surface<shape> *checksurf : theworld.surfaces) {
+  for (surf::surface *checksurf : theworld.surfaces) {
 
     // rmember to set intercept max distance in caller
     didintercept =
@@ -41,7 +41,7 @@ color cast_to_light(ray &theray, const world::world &theworld,
 
   geom::interception intercept(light_distance, vec3(0, 0, 0), vec3(0, 0, 0), uv(nicefp(0),nicefp(0)));
 
-  surf::surface<shape>* next_surface;
+  surf::surface* next_surface;
   while ((next_surface= find_next_surface(
               theray, theworld, intercept, maxdistance)) != nullptr) {
 
@@ -92,10 +92,10 @@ color raytrace(ray &theray, world::world &theworld, int cutoff,
 
   geom::interception intercept(maxdistance, vec3(0, 0, 0), vec3(0, 0, 0), uv(nicefp(0), nicefp(0)));
 
-  surf::surface<shape> *next_surface =
+  surf::surface *next_surface =
       find_next_surface(theray, theworld, intercept, maxdistance);
   if (next_surface == nullptr)
-    return theworld.bgcolor(); // we went off the map
+    return theworld.bgcolor(theray.direction); // we went off the map
 
   surf::material *next_material;
   surf::material *current_material;

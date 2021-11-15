@@ -10,6 +10,15 @@ uv::uv(nicefp au, nicefp av) {
 }
 uv::uv(double au, double av) { uv(nicefp(au), nicefp(av)); }
 
+interception::interception(const nicefp distance, const vec3 position, const vec3 normal,
+               const uv uv) {
+
+  this->distance = distance;
+  this->position = position;
+  this->normal = normal;
+  this->atuv = uv;
+}
+
 triangle::triangle(vec3 aposition, vec3 aside_a, vec3 aside_b, vec3 anormal,
                    uv uv_a, uv uv_b, uv uv_c) {
 
@@ -23,6 +32,8 @@ triangle::triangle(vec3 aposition, vec3 aside_a, vec3 aside_b, vec3 anormal,
   normal = anormal;
   area = normal.norm() / 2;
 }
+
+triangle::~triangle() {};
 
 void triangle::translate(const vec3 &by) { position = position + by; }
 
@@ -130,6 +141,8 @@ sphere::sphere(vec3 acenter, vec3 orientationvec, vec3 orientation_equatorvec,
   maxangle = amaxangle;
   radius = aradius;
 }
+
+sphere::~sphere() {};
 
 vec3 sphere::get_normal(const vec3 &position) {
 

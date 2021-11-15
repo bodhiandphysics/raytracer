@@ -7,10 +7,14 @@
 namespace scene {
 
 using namespace world;
+using namespace geom;
+
+using color = vec3; 
+
 
 static int cutoff; // recursion depth of raytracer;
 static nicefp maxdistance =
     nicefp(200); // default value of how far to check for objects
 
-world *create_scene();
+world::world *create_scene();
 } // namespace scene

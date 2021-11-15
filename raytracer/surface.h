@@ -43,15 +43,14 @@ struct light {
   light(color lightcolor, geom::vec3 position, geom::vec3 direction, nicefp min_cos_angle);
 };
 
-template<class SHAPE>
 struct surface {
 
   geom::shape *shape;
   material *inside;
   material *outside;
 
-  surface(const SHAPE &ashape, const material *insidemat,
-          const material *outsidemat);
+  surface(geom::shape *ashape,  material *insidemat,
+          material *outsidemat);
   ~surface();
 };
 
@@ -64,7 +63,7 @@ struct phong : material {
   bool doesfresnel = false;
   bool doesreflect = true;
 
-  virtual color shiny(geom::uv uv);
+  virtual color shiny(geom::uv uv) {return vec3(0,0,0);}
 
   virtual color bdfrfactor(const geom::uv &uv, geom::vec3 &tolight,
                            const geom::vec3 &fromeye, geom::vec3 &normal) final;

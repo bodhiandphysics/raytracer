@@ -28,7 +28,7 @@ mat3 mat3::transpose() { // matrix transpose
   return mat3(col1, col2, col3);
 }
 
-mat3 mat3::leftmult(const mat3 &other) {
+mat3 mat3::leftmult(mat3 &other) {
 
   vec3 buffer1, buffer2, buffer3;
   mat3 trans = other.transpose();

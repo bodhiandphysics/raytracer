@@ -3,27 +3,27 @@
 
 namespace world {
 
-template <class SHAPETYPE> void surfacegroup::addshape(SHAPE theshape) {
+void surfacegroup::addshape(shape* theshape) {
 
-  surf::surface<SHAPTYPE>* thesurface = new surf::surface(theshape, inside, outside);
-  surfaces.push_back((surf::surface<shape>*) thesurface);
+  surf::surface* thesurface = new surf::surface(theshape, inside, outside);
+  surfaces.push_back((surf::surface*) thesurface);
 }
 
 void surfacegroup::rotate(mat3 &by) {
 
-  for (surf::surface<shape> *asurface : surfaces)
+  for (surf::surface *asurface : surfaces)
     asurface->shape->rotate(by);
 }
 
 void surfacegroup::translate(vec3 &by) {
 
-  for (surf::surface<shape> *asurface : surfaces)
+  for (surf::surface *asurface : surfaces)
     asurface->shape->translate(by);
 }
 
 void surfacegroup::scale(vec3 &by) {
 
-  for (surf::surface<shape> *asurface : surfaces)
+  for (surf::surface *asurface : surfaces)
     asurface->shape->scale(by);
 }
 
@@ -33,64 +33,68 @@ void surfacegroup::envelop(surfacegroup &other) { // make sure other is actually
                                                   // inside of this surface!!
 
   other.outside = inside;
-  for (surf::surface<shape> *asurface : other.surfaces)
+  for (surf::surface *asurface : other.surfaces)
     asurface->outside = inside;
 }
 
-box::box() {
+box::box(material* inside) {
 
-  addshape<triangle>(triangle(vec3(0, 0, 0), vec3(0, 1, 0),
+  this->inside = inside;
+
+  addshape(new triangle(vec3(0, 0, 0), vec3(0, 1, 0),
                                        vec3(1, 0, 0), vec3(0, 0, 1), uv(0, 0),
                                        uv(0, 0), uv(0, 0)));
-  addshape<triangle>(triangle(vec3(1, 1, 0), vec3(-1, 0, 0),
+  addshape(new triangle(vec3(1, 1, 0), vec3(-1, 0, 0),
                                        vec3(0, -1, 0), vec3(0, 0, 1), uv(0, 0),
                                        uv(0, 0), uv(0, 0))); // + z triangles
 
-  addshape<triangle>(triangle(vec3(0, 0, -1), vec3(0, 1, 0),
+  addshape(new triangle(vec3(0, 0, -1), vec3(0, 1, 0),
                                        vec3(1, 0, 0), vec3(0, 0, -1), uv(0, 0),
                                        uv(0, 0), uv(0, 0)));
-  addshape<triangle>(triangle(vec3(1, 1, -1), vec3(-1, 0, 0),
+  addshape(new triangle(vec3(1, 1, -1), vec3(-1, 0, 0),
                                        vec3(0, -1, 0), vec3(0, 0, -1), uv(0, 0),
                                        uv(0, 0), uv(0, 0))); // - z triangles
 
-  addshape<triangle>(triangle(vec3(0, 0, 0), vec3(0, 0, -1),
+  addshape(new triangle(vec3(0, 0, 0), vec3(0, 0, -1),
                                        vec3(0, 1, 0), vec3(-1, 0, 0), uv(0, 0),
                                        uv(0, 0), uv(0, 0)));
-  addshape<triangle>(triangle(vec3(0, 1, -1), vec3(0, 0, 1),
+  addshape(new triangle(vec3(0, 1, -1), vec3(0, 0, 1),
                                        vec3(0, -1, 0), vec3(-1, 0, 0), uv(0, 0),
                                        uv(0, 0), uv(0, 0))); // - x triangles
 
-  addshape<triangle>(triangle(vec3(1, 0, 0), vec3(0, 0, -1),
+  addshape(new triangle(vec3(1, 0, 0), vec3(0, 0, -1),
                                        vec3(0, 1, 0), vec3(1, 0, 0), uv(0, 0),
                                        uv(0, 0), uv(0, 0)));
-  addshape<triangle>(triangle(vec3(1, 1, 0), vec3(-1, 0, 0),
+  addshape(new triangle(vec3(1, 1, 0), vec3(-1, 0, 0),
                                        vec3(0, -1, 0), vec3(1, 0, 0), uv(0, 0),
                                        uv(0, 0), uv(0, 0))); // + x triangles
 
-  addshape<triangle>(triangle(vec3(0, 0, 0), vec3(0, 0, -1),
+  addshape(new triangle(vec3(0, 0, 0), vec3(0, 0, -1),
                                        vec3(1, 0, 0), vec3(0, -1, 0), uv(0, 0),
                                        uv(0, 0), uv(0, 0)));
-  addshape<triangle>(triangle(vec3(1, 0, -1), vec3(0, 0, 1),
+  addshape(new triangle(vec3(1, 0, -1), vec3(0, 0, 1),
                                        vec3(-1, 0, 0), vec3(0, -1, 0), uv(0, 0),
                                        uv(0, 0), uv(0, 0))); // - y triangles
 
-  addshape<triangle>(triangle(vec3(0, 1, 0), vec3(0, 0, -1),
+  addshape(new triangle(vec3(0, 1, 0), vec3(0, 0, -1),
                                        vec3(1, 0, 0), vec3(0, 1, 0), uv(0, 0),
                                        uv(0, 0), uv(0, 0)));
-  addshape<triangle>(triangle(vec3(1, 1, -1), vec3(0, 0, 1),
+  addshape(new triangle(vec3(1, 1, -1), vec3(0, 0, 1),
                                        vec3(-1, 0, 0), vec3(0, 1, 0), uv(0, 0),
                                        uv(0, 0), uv(0, 0))); // + y triangles
 }
 
-ball::ball(nicefp radius) {
+ball::ball(nicefp radius, material* inside) {
 
-  addshape<geom::sphere>(
-      sphere(vec3(0, 0, 0), vec3(0, 1, 0), vec3(1,0,0), nicefp(-1), radius));
+  this->inside = inside;
+
+  addshape(
+      new sphere(vec3(0, 0, 0), vec3(0, 1, 0), vec3(1,0,0), nicefp(-1), radius));
 }
 
 world::world(camera::camera *thecamera, color lightcolor) {
 
-  surfaces = std::vector<surf::surface<shape>*>();
+  surfaces = std::vector<surf::surface*>();
   lights = std::vector<surf::light>();
   this->thecamera = thecamera;
   ambientlight = lightcolor;
@@ -98,14 +102,16 @@ world::world(camera::camera *thecamera, color lightcolor) {
 
 world::~world() {
 
-  for (surf::surface<shape>* surface : surfaces)
+  for (surf::surface* surface : surfaces)
     delete surface;
   delete thecamera;
 }
 
+color world::bgcolor(vec3 &direction) {return vec3(0,0,0);}
+
 void world::addsurfacegroup(surfacegroup &group) {
 
-  for (surf::surface<shape> *surface : group.surfaces)
+  for (surf::surface *surface : group.surfaces)
     surfaces.push_back(surface);
 }
 

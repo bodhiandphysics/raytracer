@@ -34,12 +34,22 @@ bool nicefp::operator<(const nicefp &other) {
   return false;
 }
 
-bool nicefp::operator<(const nicefp &other) {
+bool nicefp::operator>(const nicefp &other) {
 
   double difference = value - other.value;
   if (difference > FPCUTOFF)
     return true;
   return false;
+}
+
+void nicefp::operator+=(const nicefp &other) {
+
+  this->value += other.value;
+}
+
+void nicefp::operator+=(const double &other) {
+
+  this->value += other;
 }
 
 bool nicefp::operator==(const nicefp &other) {

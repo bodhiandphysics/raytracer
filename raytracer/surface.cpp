@@ -11,16 +11,15 @@ light::light(color alightcolor, geom::vec3 aposition, geom::vec3 adirection, nic
   this->min_cos_angle = min_cos_angle;
 }
 
-template <class SHAPE>
-surface::surface(const SHAPE &ashape, const material *insidemat,
-                 const material *outsidemat) {
 
-  shape = new SHAPE;
+surface::surface(geom::shape *ashape, material *insidemat,
+                 material *outsidemat) {
 
-  *shape = ashape;
+  shape = ashape;
   inside = insidemat;
   outside = outsidemat;
 }
+
 
 surface::~surface() { delete shape;}
 

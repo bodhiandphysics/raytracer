@@ -28,13 +28,15 @@ struct interception {
 
 struct shape {
 
+  shape() = default;
+  ~shape() = default;
   virtual bool calc_interception(ray &theray, const nicefp within_d,
-                                 interception &out);
-  virtual void translate(const vec3 &by); // always translate after rotating
-  virtual void rotate(const mat3 &by);    // always rotate before translation
-  virtual void scale(const vec3 &by);
-  virtual uv getuv(vec3 &position);
-  virtual vec3 get_normal(const vec3 &position);
+                                 interception &out) {return true;}
+  virtual void translate(const vec3 &by) {}; // always translate after rotating
+  virtual void rotate(const mat3 &by) {};    // always rotate before translation
+  virtual void scale(const vec3 &by) {};
+  virtual uv getuv(vec3 &position) {return uv(nicefp(0), nicefp(0));}
+  virtual vec3 get_normal(const vec3 &position) {return vec3(0,0,0);}
 };
 
 struct triangle : shape {
@@ -48,6 +50,8 @@ struct triangle : shape {
 
   triangle(vec3 aposition, vec3 aside_a, vec3 aside_b, vec3 anormal, uv uv_a,
            uv uv_b, uv uv_c);
+
+  ~triangle();
 
   virtual void translate(const vec3 &by) override;
   virtual void rotate(const mat3 &by) override;
@@ -68,6 +72,8 @@ struct sphere : shape {
 
   sphere(const vec3 acenter, vec3 orientationvec, vec3 orientation_equatorvec,
          nicefp amaxangle, nicefp aradius);
+
+  ~sphere();
 
   virtual vec3 get_normal(const vec3 &position) override;
   virtual uv getuv(vec3 &position) override;

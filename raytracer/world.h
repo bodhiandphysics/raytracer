@@ -19,12 +19,12 @@ using namespace surf;
 
   struct surfacegroup {
 
-  std::vector<surf::surface<shape> *> surfaces;
+  std::vector<surf::surface*> surfaces;
 
   surf::material *inside = &OPENSPACE;
   surf::material *outside = &OPENSPACE;
 
-  template <class SHAPE> void addshape(SHAPE theshape);
+  void addshape(shape* theshape);
   void rotate(mat3 &by);
   void translate(vec3 &by);
   void scale(vec3 &by);
@@ -32,17 +32,17 @@ using namespace surf;
 };
 
 struct box : surfacegroup {
-  box();
+  box(material* inside);
 };
 
 struct ball : surfacegroup {
 
-  ball(nicefp radius);
+  ball(nicefp radius, material* inside);
 };
 
 struct world {
 
-  std::vector<surf::surface<shape> *> surfaces;
+  std::vector<surf::surface*> surfaces;
   std::vector<surf::light> lights;
   camera::camera *thecamera;
 
@@ -52,7 +52,7 @@ struct world {
 
   ~world();
 
-  virtual color bgcolor();
+  virtual color bgcolor(vec3 &direction);
 
   void addsurfacegroup(surfacegroup &group);
   void addlight(surf::light alight);

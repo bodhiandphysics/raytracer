@@ -1,6 +1,7 @@
 
 #include "renderer.h"
 
+
 namespace camera {
 
 camera::camera(vec3 position, vec3 direction, vec3 image_udirection,
@@ -20,37 +21,38 @@ camera::camera(vec3 position, vec3 direction, vec3 image_udirection,
 
 camera::~camera() { free(this->image); }
 
-void camera::rendertask(int start, int stride, world::world &theworld,
+void rendertask(camera *camera, int start, int stride, world::world &theworld,
                         int cutoff, double maxdistance) {
 
-  vec3 position = this->position;
-  vec3 direction = this->direction;
-  vec3 image_udirection = this->image_udirection;
+  vec3 position = camera->position;
+  vec3 direction = camera->direction;
+  vec3 image_udirection = camera->image_udirection;
   vec3 image_vdirection =
-      this->image_vdirection nicefp focal_length =
-          this->focal_length; 
+      camera->image_vdirection;
+    nicefp focal_length =
+        camera->focal_length; 
   double u_scale =
-              this->u_size / this->width; // half sizes of image
-  double v_scale = this->v_size / this->height;
+              (camera->u_size / camera->width).value; // half sizes of image
+  double v_scale = (camera->v_size / camera->height).value;
 
-  vec3 *image = this->image;
-  int height = this->height; // half height and width
-  int width = this->width;
+  vec3 *image = camera->image;
+  int height = camera->height; // half height and width
+  int width = camera->width;
 
   for (int i = -width - 1 + start; i < width; i += stride) {
 
-    for (int j = -height - 1; j < height; j++) {
+    for (int j = 0; j < height; j++) {
 
       // this could be optomized
       vec3 pixel_loc = position + (direction * focal_length) +
                        (image_udirection * i * u_scale) +
                        (image_vdirection * j * v_scale);
-      vec3 startingpoint = pixel_loc - position
+      vec3 startingpoint = pixel_loc - position;
       geom::ray lightray(pixel_loc, startingpoint);
 
 
-      image[i + width + 1][j + height + 1] =
-          raytrace(lightray, theworld, cutoff, nicefp(maxdistance));
+      image[(i + width + 1) + width *j] =
+          raytrace::raytrace(lightray, theworld, cutoff, nicefp(maxdistance));
     }
   }
 }
@@ -63,13 +65,13 @@ void camera::render(const char *filename, world::world &theworld, int cutoff,
 
   // remember to put in exceptions later
   for (int threadnum = 0; threadnum < numthreads; threadnum++)
-    threads.emplace_back(rendertask, threadnum, numthreads, theworld, cutoff,
+    threads.emplace_back(rendertask, this, threadnum, numthreads, std::ref(theworld), cutoff,
                          maxdistance);
 
   for (int threadnum = 0; threadnum < numthreads; threadnum++)
     threads[threadnum].join();  
 
-  create_png(filename, this->image, this.height, this.width);
+  create_png(filename, this->image, this->height, this->width);
 }
 
 void create_png(const char *filename, vec3 *pixeldata, int height,
@@ -80,21 +82,21 @@ void create_png(const char *filename, vec3 *pixeldata, int height,
   for (int i = 0; i < width; i++)
     for (int j = 0; j < height; j++) {
 
-      double redcolorvalue = max(
-          255,
-          256 *
+      double redcolorvalue = std::max(
+          255.0,
+              (256 *
               nicesqrt(pixeldata[width * j + i].x)
-                  .value); // apply stupid gamma correction, 8 bit color channel
+                  .value)); // apply stupid gamma correction, 8 bit color channel
       double greencolorvalue =
-          max(255, 256 * nicesqrt(pixeldata[width * j + i].y).value);
+          std::max(255.0, 256 * nicesqrt(pixeldata[width * j + i].y).value);
       double bluecolorvalue =
-          max(255, 256 * nicesqrt(pixeldata[width * j + i].z).value);
+          std::max(255.0, 256 * nicesqrt(pixeldata[width * j + i].z).value);
       double alphacolorvalue = 255;
 
-      rgbabuffer[4 * (width * j + i)] = floor(redcolorvalue);
-      rgbabuffer[4 * (width * j + i) + 1] = floor(greencolorvalue);
-      rgbabuffer[er4 * (width * j + i) + 2] = floor(bluecolorvalue);
-      rgbabuffer[4 * (width * j + i) + 3] = floor(alphacolorvalue);
+      rgbabuffer[4 * (width * j + i)] = static_cast<int>(redcolorvalue);
+      rgbabuffer[4 * (width * j + i) + 1] = static_cast<int>(greencolorvalue);
+      rgbabuffer[4 * (width * j + i) + 2] = static_cast<int>(bluecolorvalue);
+      rgbabuffer[4 * (width * j + i) + 3] = static_cast<int>(alphacolorvalue);
     }
 
   if (stbi_write_png(filename, width, height, 4, (void*) rgbabuffer, width * 4) != 0)

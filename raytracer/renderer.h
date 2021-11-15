@@ -37,11 +37,7 @@ struct camera {
 
   void render(const char *filename, world::world &theworld, int cutoff,
               double maxdistance);
-
-private:
-  void rendertask(int start, int stride, world::world &theworld, int cutoff,
-                 double maxdistance);
 };
 
-void create_png(const char *filename, double *pixeldata, int height, int width);
+void create_png(const char *filename, vec3 *pixeldata, int height, int width);
 } // namespace camera

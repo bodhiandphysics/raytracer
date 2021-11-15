@@ -19,8 +19,8 @@ struct nicefp {
   nicefp operator-(const double other);
   nicefp operator*(const double other);
   nicefp operator/(const double other);
-  nicefp operator+=(const nicefp &other);
-  nicefp operator+=(const double other);
+  void operator+=(const nicefp &other);
+  void operator+=(const double &other);
   nicefp operator-();
 
   bool operator<(const nicefp &other);

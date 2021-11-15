@@ -1,4 +1,4 @@
-#pragma once
+
 #include "mat3.h"
 #include "nicefp.h"
 
