@@ -74,7 +74,7 @@ world::world *create_scene() {
 	theworld->addsurfacegroup(anotherball);
 
 	theworld->addlight(surf::light(vec3(10000,10000,10000), vec3(0,0, 5), vec3(0,0,-1), nicefp(-1)));
-	theworld->addlight(surf::light(vec3(100,100,100), vec3(0,0, -6), vec3(0,0,-1), nicefp(-1)));
+	theworld->addlight(surf::light(vec3(100,100,100), vec3(0,0, -10), vec3(0,0,-1), nicefp(-1)));
 
 	return theworld;  
 }
