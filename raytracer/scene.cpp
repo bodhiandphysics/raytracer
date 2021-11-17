@@ -69,7 +69,8 @@ world::world *create_scene() {
 	ball theball(nicefp(1), &mat1);
 	box abox(&mat2);
 	theball.translate(translationamount);
-	abox.rotate(genrotx(1.5))
+	mat3 rotation = genrotx(1.5);
+	abox.rotate(rotation);
 	abox.translate(trans2);
 	theworld->addsurfacegroup(theball);
 	theworld->addsurfacegroup(abox);
