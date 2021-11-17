@@ -59,7 +59,7 @@ void rendertask(camera *camera, vec3* theimage, int start, int stride, world::wo
       vec3 pixcolor = raytrace::raytrace(lightray, theworld, cutoff, nicefp(maxdistance));
 
       
-      theimage[i + width + 1 + width *j] = pixcolor;
+      theimage[(i + width) + 1 + width *(j + height)] = pixcolor;
 
       std::cout << i << " " << j << "\n";
 
