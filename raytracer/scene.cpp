@@ -62,7 +62,7 @@ world::world *create_scene() {
 	camera::camera* thecamera = new camera::camera(vec3(0,0,0), vec3(0,0,-1), vec3(1,0,0),
                vec3(0,1,0), nicefp(.5), nicefp(1),
                nicefp(1), 400, 400);
-	world::world *theworld = new world::world(thecamera, vec3(10,10,10));
+	world::world *theworld = new world::world(thecamera, vec3(100,100,100));
 
 	vec3 translationamount(0,0,-5);
 	vec3 trans2(3, 2, -7);
