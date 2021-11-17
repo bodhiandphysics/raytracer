@@ -17,10 +17,10 @@ struct ballmaterial : phong {
 	   doesreflect = true;
 	}
 
-	virtual color materialcolor(const geom::uv &location) override {return color(.9, 0 ,0);}
- 	virtual color ambient(const geom::uv &location) override {return color(.1,.1,.1);}
-  	virtual color diffuse(const geom::uv &location) override {return color(.5,.5,.5);}
-  	virtual color specular(const geom::uv &location) override {return color(.4,.4,.4);}
+	virtual color materialcolor(const geom::uv &location) override {return color(1, 0 ,0);}
+ 	virtual color ambient(const geom::uv &location) override {return color(1,1,1);}
+  	virtual color diffuse(const geom::uv &location) override {return color(1,1,1);}
+  	virtual color specular(const geom::uv &location) override {return color(1,1,1);}
 	virtual color shiny(uv theuv) override {
 
 		return vec3(3,3,3);
