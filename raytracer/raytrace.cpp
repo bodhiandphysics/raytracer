@@ -60,7 +60,7 @@ color cast_to_light(ray &theray, world::world *theworld,
       current_material = next_surface->inside;
     }
 
-    if (!next_material->doestransmit)
+    if (!current->doestransmit)
       return color(0, 0, 0); // we hit an opaque surface
 
     nicefp next_n = next_material->refract_index; // we now need to check for
@@ -133,17 +133,20 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
     // find if we need to transition matieral
 
     vec3 direction_to_light = intercept.position - thelight.position;
+    bool doshadowray = true;
     nicefp currentn;
-    if (direction_to_light.dot(next_surface->shape->get_normal(intercept.position)) < 0)
+    if (direction_to_light.dot(next_surface->shape->get_normal(intercept.position)) < 0){
       currentn = next_material->refract_index; // going through new material
+      doshadowray = next_material->doestransmit;
     else
       currentn =
           current_material->refract_index; // going through the same material
 
     ray shadowray(intercept.position, direction_to_light);
 
-    color shadowlightcolor =
-        cast_to_light(shadowray, theworld, thelight, currentn, maxdistance);
+    color shadowlightcolor;
+    if (!doshadowray) shadowlightcolor = vec3(0,0,0);
+    else cast_to_light(shadowray, theworld, thelight, currentn, maxdistance);
 
    
     retcolor = (retcolor + next_material
