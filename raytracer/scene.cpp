@@ -41,7 +41,7 @@ struct ballmaterial2 : phong {
 	   doesreflect = true;
 	}
 
-	virtual color materialcolor(const geom::uv &location) override {return color(1, 1, ,1);}
+	virtual color materialcolor(const geom::uv &location) override {return color(1, 1, 1);}
  	virtual color ambient(const geom::uv &location) override {return color(1,1,1);}
   	virtual color diffuse(const geom::uv &location) override {return color(1,1,1);}
   	virtual color specular(const geom::uv &location) override {return color(1,1,1);}
