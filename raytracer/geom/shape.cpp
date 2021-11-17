@@ -171,11 +171,11 @@ bool sphere::calc_interception(ray &ray, const nicefp within_d,
 
 
 
-  nicefp a, b c; //terms in quadratic equation;
+  nicefp a, b, c; //terms in quadratic equation;
   vec3 delta = ray.origin - this->center;
 
-  a = ray.direction.norm2()
-  b = delta.dot(ray.direction) * 2
+  a = ray.direction.norm2();
+  b = delta.dot(ray.direction) * 2;
   c = delta.norm2() - (this->radius * this->radius);
 
   nicefp descriminant = b*b - a*c*4;
@@ -185,7 +185,7 @@ bool sphere::calc_interception(ray &ray, const nicefp within_d,
   nicefp sqrtdescriminant = nicesqrt(descriminant);
 
   nicefp distance_p = (-b + sqrtdescriminant) / (a*2);
-  nicdfp distance_n = (-b - sqrtdescriminant) / (a*2);
+  nicefp distance_m = (-b - sqrtdescriminant) / (a*2);
   nicefp mindistance;
 
 
@@ -198,6 +198,8 @@ bool sphere::calc_interception(ray &ray, const nicefp within_d,
   out.distance = mindistance;
   out.atuv = this->getuv(out.position);
   out.normal = this->get_normal(out.position);
+
+  return true;
 
 }
 
