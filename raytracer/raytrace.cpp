@@ -45,8 +45,9 @@ color cast_to_light(ray &theray, world::world *theworld,
   geom::interception intercept(light_distance, vec3(0, 0, 0), vec3(0, 0, 0), uv(nicefp(0),nicefp(0)));
   nicefp maxdistance = light_distance;
   surf::surface* next_surface;;
+  nextray = theray;
   while ((next_surface = find_next_surface(
-              theray, theworld, intercept, maxdistance)) != nullptr) {
+              nextray, theworld, intercept, maxdistance)) != nullptr) {
 
     surf::material *next_material;
     surf::material *current_material;
