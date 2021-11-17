@@ -53,8 +53,8 @@ void rendertask(camera *camera, vec3* theimage, int start, int stride, world::wo
       vec3 pixel_loc = position + (direction * focal_length) +
                        (image_udirection * i * u_scale) +
                        (image_vdirection * j * v_scale);
-      vec3 startingpoint = pixel_loc - position;
-      geom::ray lightray(pixel_loc, startingpoint);
+      vec3 direction = pixel_loc - position;
+      geom::ray lightray(position, direction);
 
       vec3 pixcolor = raytrace::raytrace(lightray, theworld, cutoff, nicefp(maxdistance));
 

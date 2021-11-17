@@ -28,12 +28,12 @@ world::world *create_scene() {
                nicefp(1), 800, 800);
 	world::world *theworld = new world::world(thecamera, vec3(1,1,1));
 
-	vec3 translationamount(4,-4,-7);
+	vec3 translationamount(0,0,-7);
 	ball theball(nicefp(1), &mat1);
 	theball.translate(translationamount);
 	theworld->addsurfacegroup(theball);
 
-	theworld->addlight(surf::light(vec3(1,1,1), vec3(4,-4, 5), vec3(0,0,-1), nicefp(-1)));
+	theworld->addlight(surf::light(vec3(1,1,1), vec3(0,0, 5), vec3(0,0,-1), nicefp(-1)));
 
 	return theworld;  
 }
