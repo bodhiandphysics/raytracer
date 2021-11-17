@@ -67,13 +67,11 @@ world::world *create_scene() {
 	vec3 translationamount(0,0,-5);
 	vec3 trans2(3, 2, -7);
 	ball theball(nicefp(1), &mat1);
-	box abox(&mat2);
+	ball anotherball(nicefp(1), &mat2);
 	theball.translate(translationamount);
-	mat3 rotation = genrotx(1.5);
-	abox.rotate(rotation);
-	abox.translate(trans2);
+	anotherball.translate(trans2);
 	theworld->addsurfacegroup(theball);
-	theworld->addsurfacegroup(abox);
+	theworld->addsurfacegroup(anotherball);
 
 	theworld->addlight(surf::light(vec3(10000,10000,10000), vec3(0,0, 5), vec3(0,0,-1), nicefp(-1)));
 	theworld->addlight(surf::light(vec3(100,100,100), vec3(0,0, -10), vec3(0,0,-1), nicefp(-1)));
