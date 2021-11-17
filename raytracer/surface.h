@@ -11,12 +11,12 @@ using namespace geom;
 
 struct material {
 
-  bool doesrefract = true;
-  bool doesambient = false;
-  bool doeslambert = true;
-  bool doestransmit = true;
-  bool doesfresnel = true;
-  bool doesreflect = false;
+  bool doesrefract;
+  bool doesambient;
+  bool doeslambert;
+  bool doestransmit;
+  bool doesfresnel;
+  bool doesreflect;
 
   geom::vec3 beerfactor = geom::vec3(0, 0, 0);
   geom::nicefp refract_index = 1;
@@ -31,6 +31,15 @@ struct material {
 
 struct openspace : material {
 
+  openspace() {
+
+  doesrefract = false;
+  doesambient = true;
+  doeslambert = true;
+  doestransmit = false;
+  doesfresnel = false;
+  doesreflect = true;
+  }
 };
 
 struct light {
@@ -56,13 +65,6 @@ struct surface {
 
 struct phong : material {
 
-  bool doesrefract = false;
-  bool doesambient = true;
-  bool doeslambert = true;
-  bool doestransmit = false;
-  bool doesfresnel = false;
-  bool doesreflect = true;
-
   virtual color shiny(geom::uv uv) {return vec3(0,0,0);}
 
   virtual color bdfrfactor(const geom::uv &uv, geom::vec3 &tolight,
@@ -71,12 +73,7 @@ struct phong : material {
 
 struct lambert : material {
 
-  bool doesrefract = false;
-  bool doesambient = true;
-  bool doeslambert = true;
-  bool doestransmit = false;
-  bool doesfresnel = false;
-  bool doesreflect = false;
+
 
   virtual color bdfrfactor(const geom::uv &uv, geom::vec3 &tolight,
                            const geom::vec3 &fromeye, geom::vec3 &normal) final;
@@ -86,12 +83,6 @@ struct dialectric
     : material { // dialectrics have no lambert, but do have a shinyness from
                  // fresnel; assume all dialectrics' color comes from refraction
 
-  bool doesrefract = true;
-  bool doesambient = false;
-  bool doeslambert = false;
-  bool doestransmit = true;
-  bool doesfresnel = true;
-  bool doesreflect = true;
 
   virtual color shiny(geom::uv uv);
 
@@ -101,12 +92,6 @@ struct dialectric
 
 struct mirror : material {
 
-  bool doesrefract = false;
-  bool doesambient = false;
-  bool doeslambert = false;
-  bool doestransmit = false;
-  bool doesfresnel = false;
-  bool doesreflect = true;
 
   virtual color bdfrfactor(const geom::uv &uv, geom::vec3 &tolight,
                            const geom::vec3 &fromeye, geom::vec3 &normal) final;

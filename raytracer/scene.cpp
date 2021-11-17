@@ -5,12 +5,17 @@ namespace scene {
 
 struct ballmaterial : phong {
 
-	bool doesrefract = false;
-  	bool doesambient = true;
-  	bool doeslambert = true;
-  	bool doestransmit = false;
-  	bool doesfresnel = false;
-  	bool doesreflect = true;
+
+
+	ballmaterial() {
+
+	   doesrefract = false;
+	   doesambient = true;
+	   doeslambert = true;
+	   doestransmit = false;
+	   doesfresnel = false;
+	   doesreflect = true;
+	}
 
 	virtual color materialcolor(const geom::uv &location) override {return color(.9, 0 ,0);}
  	virtual color ambient(const geom::uv &location) override {return color(.1,.1,.1);}
