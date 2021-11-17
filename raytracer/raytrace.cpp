@@ -85,7 +85,7 @@ color cast_to_light(ray &theray, world::world *theworld,
 
   // we break out of the loop at the light
 
-  return thelight.lightcolor.mult(nexp(currentbeer) /
+  return thelight.lightcolor.mult(nexp(currentbeer)) /
          light_distance; // use linear as opposed to quadratic attenuation...
                          // better for close distances
 }
