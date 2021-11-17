@@ -37,7 +37,7 @@ void rendertask(camera *camera, vec3* theimage, int start, int stride, world::wo
     nicefp focal_length =
         camera->focal_length; 
   double u_scale =
-              (camera->u_size / camera->width).value; // half sizes of image
+              (camera->u_size / camera->width).value; 
   double v_scale = (camera->v_size / camera->height).value;
 
 
@@ -53,8 +53,8 @@ void rendertask(camera *camera, vec3* theimage, int start, int stride, world::wo
       vec3 pixel_loc = position + (direction * focal_length) +
                        (image_udirection * i * u_scale) +
                        (image_vdirection * j * v_scale);
-      vec3 direction = pixel_loc - position;
-      geom::ray lightray(position, direction);
+      vec3 raydirection = pixel_loc - position;
+      geom::ray lightray(position, raydirection);
 
       vec3 pixcolor = raytrace::raytrace(lightray, theworld, cutoff, nicefp(maxdistance));
 
