@@ -132,7 +132,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
 
     // find if we need to transition matieral
 
-    vec3 direction_to_light = intercept.position - thelight.position;
+    vec3 direction_to_light = thelight.position - intercept.position;
     bool doshadowray = true;
     nicefp currentn;
     if (direction_to_light.dot(next_surface->shape->get_normal(intercept.position)) < 0){
