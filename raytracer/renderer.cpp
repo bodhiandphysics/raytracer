@@ -85,7 +85,6 @@ void camera::render(const char *filename, world::world *theworld, int cutoff,
   //  threads[threadnum].join(); 
 
   create_png(filename, theimage, this->height, this->width);
-  free(theimage);
 }
 
 void create_png(const char *filename, std::vector<std::vector<vec3>> &pixeldata, int height,
