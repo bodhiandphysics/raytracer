@@ -18,7 +18,7 @@ surf::surface *find_next_surface(geom::ray &theray,
     // rmember to set intercept max distance in caller
     surf::surface* checksurf = theworld->surfaces[i];
     didintercept =
-        checksurf->bshape->calc_interception(theray, cutoff, intercept);
+        checksurf->shape->calc_interception(theray, cutoff, intercept);
     if (didintercept) {
       retsurf = checksurf;
       cutoff = intercept.distance;
@@ -186,8 +186,8 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
 
   ray refractray;
   color refractlightcolor = vec3(0, 0, 0);
-  bool didrefract = fale;
-  if (next_material.doestransmit) didrefract = theray.refract(intercept.position, intercept.normal,
+  bool didrefract = false;
+  if (next_material->doestransmit) didrefract = theray.refract(intercept.position, intercept.normal,
                                   next_material->refract_index,
                                   current_material->refract_index, refractray);
 
