@@ -93,7 +93,7 @@ vec3 vec3::nexp(const vec3 &vec) { // e ^ -x, userful for the beer equation
 vec3 vec3::reflect(vec3 &normal) { // find the reflection of a vector on normal
 
   const nicefp vdotn = this->dot(normal);
-  vec3 newdirection = *this - (normal * vdotn) * 2;
+  vec3 newdirection = (normal * vdotn) * 2 - *this;
   return newdirection;
 }
 
