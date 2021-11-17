@@ -44,10 +44,9 @@ color cast_to_light(ray &theray, world::world *theworld,
 
   geom::interception intercept(light_distance, vec3(0, 0, 0), vec3(0, 0, 0), uv(nicefp(0),nicefp(0)));
   nicefp maxdistance = light_distance;
-  surf::surface* next_surface;
-  ray nextray = theray.contin(.01);
+  surf::surface* next_surface;;
   while ((next_surface = find_next_surface(
-              nextray, theworld, intercept, maxdistance)) != nullptr) {
+              theray, theworld, intercept, maxdistance)) != nullptr) {
 
     surf::material *next_material;
     surf::material *current_material;
@@ -147,7 +146,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
 
     color shadowlightcolor;
     if (!doshadowray) shadowlightcolor = vec3(0,0,0);
-    else cast_to_light(shadowray, theworld, thelight, currentn, maxdistance);
+    else shadowlightcolor = cast_to_light(shadowray, theworld, thelight, currentn, maxdistance);
 
    
     retcolor = (retcolor + next_material
