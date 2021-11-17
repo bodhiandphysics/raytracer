@@ -33,7 +33,7 @@ world::world *create_scene() {
 	theball.translate(translationamount);
 	theworld->addsurfacegroup(theball);
 
-	//theworld->addlight(surf::light(vec3(1,1,1), vec3(0,0, 5), vec3(0,0,-1), nicefp(-1)));
+	theworld->addlight(surf::light(vec3(1,1,1), vec3(0,0, 5), vec3(0,0,-1), nicefp(-1)));
 
 	return theworld;  
 }
