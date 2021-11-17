@@ -200,7 +200,8 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
   if (currentbeer == vec3(0,0,0))
     return retcolor.mult(next_material->materialcolor(intercept.atuv)) / intercept.distance; // don't do nexp if not nescessary
   else {
-    retcolor = (retcolor.mult(next_material->materialcolor(intercept.atuv))).mult(nexp(currentbeer * intercept.distance))/intercept.distance;
+    retcolor = retcolor.mult(next_material->materialcolor(intercept.atuv));
+    retcolor= retcolor.mult(nexp(currentbeer * intercept.distance))/intercept.distance;
     // use linear attenuation
     if (retcolor.norm().value > 1) std::cout<<retcolor.norm().value << "\n";
     return retcolor;
