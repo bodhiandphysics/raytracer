@@ -169,64 +169,37 @@ void sphere::scale(const vec3 &by) { // note elipses are not supported!!!!  make
 bool sphere::calc_interception(ray &ray, const nicefp within_d,
                                interception &out) {
 
-  // uses the algorithm on page 76 of Shirley and Marschner
-  bool didintercept = false;
 
-  vec3 delta_o_c = ray.origin - center;
-  nicefp d_dot_d = ray.direction.norm2();
-  nicefp d_dot_o_c = ray.direction.dot(delta_o_c);
 
-  nicefp descriminant =
-      (d_dot_o_c * d_dot_o_c) -
-      ((d_dot_d * (delta_o_c.norm2()) - (radius * radius)));
+  nicefp a, b c; //terms in quadratic equation;
+  vec3 delta = ray.origin - this->center;
 
-  if (descriminant < 0)
-    return false;
+  a = ray.direction.norm2()
+  b = delta.dot(ray.direction) * 2
+  c = delta.norm2() - (this->radius * this->radius);
 
-  nicefp sd = nicesqrt(descriminant);
+  nicefp descriminant = b*b - a*c*4;
 
-  nicefp distance_p = -sd + d_dot_o_c; // note direction is always normalized!
+  if (descriminant < 0) return false;
 
-  nicefp distance_m = -sd - d_dot_o_c;
-  nicefp possible_distance;
-  vec3 possible_position;
+  nicefp sqrtdescriminant = nicesqrt(descriminant);
 
-  if ((distance_m < distance_p || distance_p < 0) && distance_m.value > 0 &&
-      distance_m < within_d) {
-    nicefp possible_distance = distance_m;
-    vec3 possible_position =
-        ray.origin + ray.direction*distance_m;
-    if (maxangle < (possible_position - center).dot(orientation)) {
-      out.distance = possible_distance;
-      out.position = possible_position;
-      didintercept = true;
-    }
-  } else {
+  nicefp distance_p = (-b + sqrtdescriminant) / (a*2);
+  nicdfp distance_n = (-b - sqrtdescriminant) / (a*2);
+  nicefp mindistance;
 
-    if (distance_p.value > 0 && distance_p < within_d) {
-        possible_distance = distance_p;
-        possible_position =
-          ray.origin +
-          ray.direction * distance_p; // i.e. orign + direction* distance - center
 
-      if (maxangle < (possible_position - center).dot(orientation)) {
-        out.distance = possible_distance;
-        out.position = possible_position;
-        didintercept = true;
-      }
-    }
-  }
+  if (distance_p < 0 && distance_m < 0) return false; 
+  if (distance_p > 0) mindistance = distance_p;
+  if (distance_m > 0 && ((distance_p > 0 && distance_m < distance_p) || distance_p < 0))
+    mindistance = distance_m;
 
-  if (didintercept) {
+  out.position = ray.origin + ray.direction * mindistance;
+  out.distance = mindistance;
+  out.atuv = this->getuv(out.position);
+  out.normal = this->get_normal(out.position);
 
-    out.normal = get_normal(out.position);
-    out.atuv = getuv(out.position);
-    return true;
-  }
-
-  return false;
 }
-
 
 uv sphere::getuv(vec3 &position) {
 
