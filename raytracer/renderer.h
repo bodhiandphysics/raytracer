@@ -40,5 +40,5 @@ struct camera {
               double maxdistance);
 };
 
-void create_png(const char *filename, std::vector<std::vector<vec3>>, int height, int width);
+void create_png(const char *filename, std::vector<std::vector<vec3>> &pixeldata, int height, int width);
 } // namespace camera

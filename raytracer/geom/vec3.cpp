@@ -71,6 +71,11 @@ vec3 vec3::operator/(const nicefp &div) {
   return vec3(x / div, y / div, z / div);
 }
 
+vec3 vec3::opterator/(double &div) {
+
+  return vec3(x/div, y/div, z/div);
+}
+
 nicefp vec3::dot(const vec3 &other) {
 
   return x * other.x + y * other.y + z * other.z;
