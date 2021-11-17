@@ -146,7 +146,7 @@ sphere::~sphere() {};
 
 vec3 sphere::get_normal(const vec3 &position) {
 
-  return (center - position) /
+  return (position - center) /
          (radius); // i hate hate hate that you cant declare const this!
 }
 
