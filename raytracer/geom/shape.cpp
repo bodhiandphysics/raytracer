@@ -205,16 +205,16 @@ bool sphere::calc_interception(ray &ray, const nicefp within_d,
 
 uv sphere::getuv(vec3 &position) {
 
-  // vec3 delta = (center - position) / radius;
-  // double odotd = orientation.dot(delta).value;
+  vec3 delta = (center - position) / radius;
+  double odotd = orientation.dot(delta).value;
 
-  // double v = acos(odotd) / M_PI;
-  // vec3 equat_delta = delta - orientation * odotd; // project delta onto plane;
-  // double u = atan2(orientation_equator.cross(equat_delta).norm().value,
-  //                  orientation_equator.dot(equat_delta).value) /
-  //            (2 * M_PI);
+  double v = acos(odotd) / M_PI;
+  vec3 equat_delta = delta - orientation * odotd; // project delta onto plane;
+  double u = atan2(orientation_equator.cross(equat_delta).norm().value,
+                   orientation_equator.dot(equat_delta).value) /
+             (2 * M_PI);
 
-  // return uv(u, v);
+  return uv(u, v);
 
   return uv(nicefp(0), nicefp(0));
 }
