@@ -23,7 +23,7 @@ struct ballmaterial : phong {
   	virtual color specular(const geom::uv &location) override {return color(1,1,1);}
 	virtual color shiny(uv theuv) override {
 
-		return vec3(3,3,3);
+		return vec3(20,20,20);
 	}
 };
 
