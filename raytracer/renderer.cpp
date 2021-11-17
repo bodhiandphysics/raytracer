@@ -61,6 +61,8 @@ void rendertask(camera *camera, vec3* theimage, int start, int stride, world::wo
       
       theimage[i + width + 1 + width *j] = pixcolor;
 
+      std::cout << i << " " << j << "\n";
+
         
     }
   }
