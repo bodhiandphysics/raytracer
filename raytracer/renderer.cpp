@@ -78,7 +78,7 @@ void camera::render(const char *filename, world::world *theworld, int cutoff,
  // for (int threadnum = 0; threadnum < numthreads; threadnum++)
     //threads.emplace_back(rendertask, this, threadnum, numthreads, std::ref(theworld), cutoff,
                         // maxdistance);
-  vec3* theimage = (vec3 *)malloc(height * width * sizeof(vec3));
+  vec3* theimage = (vec3 *)malloc(4* height * width * sizeof(vec3));
 
 
 
