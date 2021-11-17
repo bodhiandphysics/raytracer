@@ -147,7 +147,7 @@ sphere::~sphere() {};
 vec3 sphere::get_normal(const vec3 &position) {
 
   return (center - position) /
-         (radius * -1); // i hate hate hate that you cant declare const this!
+         (radius); // i hate hate hate that you cant declare const this!
 }
 
 void sphere::translate(const vec3 &by) { center.translate(by); }
