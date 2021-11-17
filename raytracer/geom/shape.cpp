@@ -127,7 +127,7 @@ uv triangle::getuv(vec3 &intersect) { // using barycentric cooredinate
   return uv(u, v);
 }
 
-vec3 triangle::get_normal(const vec3 &position) {
+vec3 triangle::get_normal(vec3 &position) {
 
   return (normal * 2) / area; // area is half the norm of the normal
 }
@@ -144,7 +144,7 @@ sphere::sphere(vec3 acenter, vec3 orientationvec, vec3 orientation_equatorvec,
 
 sphere::~sphere() {};
 
-vec3 sphere::get_normal(const vec3 &position) {
+vec3 sphere::get_normal(vec3 &position) {
 
   return (position - center) /
          (radius); // i hate hate hate that you cant declare const this!
@@ -289,5 +289,5 @@ uv plane::getuv(vec3 &position) {
   return uv(u, v);
 }
 
-vec3 plane::get_normal(const vec3 &position) { return normal; }
+vec3 plane::get_normal(vec3 &position) { return normal; }
 } // namespace geom

@@ -36,7 +36,7 @@ struct shape {
   virtual void rotate(const mat3 &by) {};    // always rotate before translation
   virtual void scale(const vec3 &by) {};
   virtual uv getuv(vec3 &position) {return uv(nicefp(0), nicefp(0));}
-  virtual vec3 get_normal(const vec3 &position) {return vec3(0,0,0);}
+  virtual vec3 get_normal(vec3 &position) {return vec3(0,0,0);}
 };
 
 struct triangle : shape {
@@ -59,7 +59,7 @@ struct triangle : shape {
   virtual bool calc_interception(ray &theray, const nicefp within_d,
                                  interception &out) override;
   virtual uv getuv(vec3 &intersect) override;
-  virtual vec3 get_normal(const vec3 &position) override;
+  virtual vec3 get_normal(vec3 &position) override;
 };
 
 struct sphere : shape {
@@ -75,7 +75,7 @@ struct sphere : shape {
 
   ~sphere();
 
-  virtual vec3 get_normal(const vec3 &position) override;
+  virtual vec3 get_normal(vec3 &position) override;
   virtual uv getuv(vec3 &position) override;
   virtual void translate(const vec3 &by) override;
   virtual void rotate(const mat3 &by) override;
@@ -98,7 +98,7 @@ struct plane : shape {
   virtual void rotate(const mat3 &by) override;
   virtual void scale(const vec3 &by) override;
   virtual uv getuv(vec3 &position) override;
-  virtual vec3 get_normal(const vec3 &position) override;
+  virtual vec3 get_normal(vec3 &position) override;
 };
 
 } // namespace geom
