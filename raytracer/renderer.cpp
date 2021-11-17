@@ -26,7 +26,7 @@ camera::camera(vec3 position, vec3 direction, vec3 image_udirection,
 camera::~camera() { 
  }
 
-void rendertask(camera *camera, vec3* theimage, int start, int stride, world::world *theworld,
+void rendertask(camera *camera, std::vector<std::vector<vec3>> &theimage, int start, int stride, world::world *theworld,
                         int cutoff, double maxdistance) {
 
   vec3 position = camera->position;
@@ -41,28 +41,27 @@ void rendertask(camera *camera, vec3* theimage, int start, int stride, world::wo
   double v_scale = (camera->v_size / camera->height).value;
 
 
-  vec3* image = theimage;
+
   int height = camera->height; // half height and width
   int width = camera->width;
   
-  for (int i = -width - 1 + start; i < width; i += stride) {
+  for (int i = 0; i < width; i++ ) {
 
-    for (int j = -height; j < height -1; j++) {
+    for (int j = 0; j < height; j++) {
 
       // this could be optomized
       vec3 pixel_loc = position + (direction * focal_length) +
+                       ((image_udirection * -1) * u_size/2) +
+                       (image_vdirection * v_size/2) +
                        (image_udirection * i * u_scale) +
-                       (image_vdirection * j * v_scale);
+                       (image_vdirection * -j * v_scale);
       vec3 raydirection = pixel_loc - position;
       geom::ray lightray(position, raydirection);
 
       vec3 pixcolor = raytrace::raytrace(lightray, theworld, cutoff, nicefp(maxdistance));
 
       
-      theimage[(i + width) + 1 + width *(j + height)] = pixcolor;
-
-      std::cout << i << " " << j << "\n";
-
+      theimage[i][j] = pixcolor;
         
     }
   }
@@ -78,9 +77,7 @@ void camera::render(const char *filename, world::world *theworld, int cutoff,
  // for (int threadnum = 0; threadnum < numthreads; threadnum++)
     //threads.emplace_back(rendertask, this, threadnum, numthreads, std::ref(theworld), cutoff,
                         // maxdistance);
-  vec3* theimage = (vec3 *)malloc(4* height * width * sizeof(vec3));
-
-
+  std::vector<std::vector<vec3>> theimage;
 
   rendertask(this, theimage, 0, 1, theworld, cutoff, maxdistance);
                         // maxdistance
@@ -91,7 +88,7 @@ void camera::render(const char *filename, world::world *theworld, int cutoff,
   free(theimage);
 }
 
-void create_png(const char *filename, vec3 *pixeldata, int height,
+void create_png(const char *filename, std::vector<std::vector<vec3>> &pixeldata, int height,
                 int width) {
 
   char *rgbabuffer = (char *)malloc(4 * height * width * sizeof(char));
@@ -99,15 +96,15 @@ void create_png(const char *filename, vec3 *pixeldata, int height,
   for (int i = 0; i < width; i++)
     for (int j = 0; j < height; j++) {
 
-      double redcolorvalue = std::max(
+      double redcolorvalue = std::min(
           255.0,
               (
-              nicesqrt(pixeldata[width * j + i].x)
+              (pixeldata[i][j].x)
                   .value)); // apply stupid gamma correction, 8 bit color channel
       double greencolorvalue =
-          std::max(255.0, nicesqrt(pixeldata[width * j + i].y).value);
+          std::min(255.0, (pixeldata[i][j].y).value);
       double bluecolorvalue =
-          std::max(255.0, nicesqrt(pixeldata[width * j + i].z).value);
+          std::min(255.0, (pixeldata[i][j]).value);
       double alphacolorvalue = 255;
 
       rgbabuffer[4 * (width * j + i)] = static_cast<int>(redcolorvalue);
