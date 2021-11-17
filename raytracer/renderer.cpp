@@ -47,7 +47,7 @@ void rendertask(camera *camera, vec3* theimage, int start, int stride, world::wo
   
   for (int i = -width - 1 + start; i < width; i += stride) {
 
-    for (int j = 0; j < height -1; j++) {
+    for (int j = -height; j < height -1; j++) {
 
       // this could be optomized
       vec3 pixel_loc = position + (direction * focal_length) +
@@ -101,13 +101,13 @@ void create_png(const char *filename, vec3 *pixeldata, int height,
 
       double redcolorvalue = std::max(
           255.0,
-              (256 *
+              (
               nicesqrt(pixeldata[width * j + i].x)
                   .value)); // apply stupid gamma correction, 8 bit color channel
       double greencolorvalue =
-          std::max(255.0, 256 * nicesqrt(pixeldata[width * j + i].y).value);
+          std::max(255.0, nicesqrt(pixeldata[width * j + i].y).value);
       double bluecolorvalue =
-          std::max(255.0, 256 * nicesqrt(pixeldata[width * j + i].z).value);
+          std::max(255.0, nicesqrt(pixeldata[width * j + i].z).value);
       double alphacolorvalue = 255;
 
       rgbabuffer[4 * (width * j + i)] = static_cast<int>(redcolorvalue);
