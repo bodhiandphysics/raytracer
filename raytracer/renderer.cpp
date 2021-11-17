@@ -51,8 +51,8 @@ void rendertask(camera *camera, std::vector<std::vector<vec3>> &theimage, int st
 
       // this could be optomized
       vec3 pixel_loc = position + (direction * focal_length) +
-                       ((image_udirection * -1) * u_size/2) +
-                       (image_vdirection * v_size/2) +
+                       ((image_udirection * -1) * camera->u_size/2) +
+                       (image_vdirection * camera->v_size/2) +
                        (image_udirection * i * u_scale) +
                        (image_vdirection * -j * v_scale);
       vec3 raydirection = pixel_loc - position;

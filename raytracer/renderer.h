@@ -25,7 +25,6 @@ struct camera {
    nicefp focal_length;
    nicefp u_size; // half sizes of image
    nicefp v_size;
-   vec3 *image;
 
    int height; // half height and length
    int width;
@@ -41,5 +40,5 @@ struct camera {
               double maxdistance);
 };
 
-void create_png(const char *filename, vec3 *pixeldata, int height, int width);
+void create_png(const char *filename, std::vector<std::vector<vec3>>, int height, int width);
 } // namespace camera
