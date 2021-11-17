@@ -27,7 +27,33 @@ struct ballmaterial : phong {
 	}
 };
 
+struct ballmaterial2 : phong {
+
+
+
+	ballmaterial() {
+
+	   doesrefract = false;
+	   doesambient = true;
+	   doeslambert = true;
+	   doestransmit = false;
+	   doesfresnel = false;
+	   doesreflect = true;
+	}
+
+	virtual color materialcolor(const geom::uv &location) override {return color(0, 0 ,1);}
+ 	virtual color ambient(const geom::uv &location) override {return color(1,1,1);}
+  	virtual color diffuse(const geom::uv &location) override {return color(1,1,1);}
+  	virtual color specular(const geom::uv &location) override {return color(1,1,1);}
+	virtual color shiny(uv theuv) override {
+
+		return vec3(70,70,70);
+	}
+};
+
 static ballmaterial mat1; 
+static ballmaterial2 mat2; 
+
 
 
 
@@ -41,7 +67,7 @@ world::world *create_scene() {
 	vec3 translationamount(0,0,-5);
 	vec3 trans2(3, 2, -7)
 	ball theball(nicefp(1), &mat1);
-	ball anotherball(nicefp(1), &mat2 )
+	ball anotherball(nicefp(1), &mat2)
 	theball.translate(translationamount);
 	theball.translate(trans2);
 	theworld->addsurfacegroup(theball);
