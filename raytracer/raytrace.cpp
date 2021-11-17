@@ -158,8 +158,8 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
 
   // next handle reflections
 
-  vec3 reflectdirection = theray.direction.reflect(intercept.normal);
-  ray reflectray(intercept.position + reflectdirection*.01, reflectdirection); // make sure we're not inside the surface
+  ray reflectray = theray.reflect(intercept.position, intercept.normal);
+  
 
   color reflectlightcolor =
       raytrace(reflectray, theworld, cutoff - 1, maxdistance);
