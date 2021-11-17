@@ -103,7 +103,7 @@ void create_png(const char *filename, std::vector<std::vector<vec3>> &pixeldata,
       double greencolorvalue =
           std::min(255.0, (pixeldata[i][j].y).value);
       double bluecolorvalue =
-          std::min(255.0, (pixeldata[i][j]).value);
+          std::min(255.0, (pixeldata[i][j].z).value);
       double alphacolorvalue = 255;
 
       rgbabuffer[4 * (width * j + i)] = static_cast<int>(redcolorvalue);
