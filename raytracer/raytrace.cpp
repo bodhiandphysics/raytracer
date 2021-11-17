@@ -47,7 +47,7 @@ color cast_to_light(ray &theray, world::world *theworld,
   surf::surface* next_surface;
   ray nextray = theray.contin(.01);
   while ((next_surface = find_next_surface(
-              nextray, theworld, intercept, maxdistance)) != nullptr) {
+              nextray, theworld, intercept, lightdistance)) != nullptr) {
 
     surf::material *next_material;
     surf::material *current_material;
@@ -138,7 +138,6 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
     if (direction_to_light.dot(next_surface->shape->get_normal(intercept.position)) < 0){
       currentn = next_material->refract_index; // going through new material
       doshadowray = next_material->doestransmit;
-    }
     else
       currentn =
           current_material->refract_index; // going through the same material
