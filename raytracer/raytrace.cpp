@@ -42,7 +42,7 @@ color cast_to_light(ray &theray, world::world *theworld,
     return color(0, 0, 0); // outside of light cone
 
   geom::interception intercept(light_distance, vec3(0, 0, 0), vec3(0, 0, 0), uv(nicefp(0),nicefp(0)));
-  surf::surface* next_surface;;
+  surf::surface* next_surface;
   ray nextray = theray;
   while ((next_surface = find_next_surface(
               nextray, theworld, intercept, light_distance)) != nullptr) {
@@ -133,7 +133,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
     vec3 direction_to_light = (thelight.position - intercept.position).normalize();
     bool doshadowray = true;
     nicefp currentn;
-    if (direction_to_light.dot(next_surface->shape->get_normal(intercept.position)) < 0){
+    if (direction_to_light.dot(intercept.normal) < 0){
       currentn = next_material->refract_index; // going through new material
       doshadowray = next_material->doestransmit;
     }
@@ -151,7 +151,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
     retcolor = (retcolor + next_material
                  ->bdfrfactor(uv, shadowray.direction,
                               theray.direction, intercept.normal)
-                 .mult(shadowlightcolor));
+                 .mult(shadowlightcolor)).mult(thelight.lightcolor);
   }
 
   // next handle reflections
