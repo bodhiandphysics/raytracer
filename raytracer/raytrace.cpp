@@ -123,7 +123,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
   if (next_material->doesambient) {
 
     retcolor = (retcolor + next_material->materialcolor(uv).mult(next_material->ambient(uv))
-                    .mult(theworld->ambientlight)).normalize();
+                    .mult(theworld->ambientlight));
   }
 
   // next cast to all the light sources
@@ -153,7 +153,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
     retcolor = (retcolor + next_material
                  ->bdfrfactor(uv, shadowray.direction,
                               theray.direction, intercept.normal)
-                 .mult(shadowlightcolor)).normalize();
+                 .mult(shadowlightcolor));
   }
 
   // next handle reflections
@@ -180,7 +180,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
   retcolor = (retcolor + (next_material->bdfrfactor(uv, reflectray.direction,
                                       theray.direction, intercept.normal) *
             fresnelterm)
-               .mult(reflectlightcolor)).normalize();
+               .mult(reflectlightcolor));
 
   // then handle refraction
 
@@ -193,7 +193,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
 
   if (didrefract)
     refractlightcolor = raytrace(refractray, theworld, cutoff - 1, maxdistance);
-  retcolor = (retcolor + refractlightcolor * (nicefp(1) - fresnelterm)).normalize(); // try to conserve engery
+  retcolor = (retcolor + refractlightcolor * (nicefp(1) - fresnelterm)); // try to conserve engery
 
   // finally put it all together
 
