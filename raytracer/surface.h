@@ -34,9 +34,9 @@ struct openspace : material {
   openspace() {
 
   doesrefract = false;
-  doesambient = true;
+  doesambient = false;
   doeslambert = true;
-  doestransmit = false;
+  doestransmit = true;
   doesfresnel = false;
   doesreflect = true;
   }
