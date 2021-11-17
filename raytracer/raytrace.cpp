@@ -198,7 +198,8 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
 
   vec3 currentbeer = current_material->beerfactor;
   if (currentbeer == vec3(0,0,0))
-    return retcolor.mult(next_material->materialcolor(intercept.atuv)) / intercept.distance; // don't do nexp if not nescessary
+    retcolor = retcolor.mult(next_material->materialcolor(intercept.atuv)) / intercept.distance;
+    return retcolor; // don't do nexp if not nescessary
   else {
     retcolor = retcolor.mult(next_material->materialcolor(intercept.atuv));
     retcolor= retcolor.mult(nexp(currentbeer * intercept.distance))/intercept.distance;
