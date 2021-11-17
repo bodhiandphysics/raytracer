@@ -24,7 +24,7 @@ struct vec3 {
   bool operator==(const vec3 &other);
   vec3 operator*(double mult);
   vec3 operator*(const nicefp &other);
-  vec3 operator/(double div);
+  vec3 operator/(double &div);
   vec3 operator/(const nicefp &div);
 
   nicefp dot(const vec3 &other);
