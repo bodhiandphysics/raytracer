@@ -67,7 +67,7 @@ world::world *create_scene() {
 	vec3 translationamount(0,0,-5);
 	vec3 trans2(3, 2, -7);
 	ball theball(nicefp(1), &mat1);
-	ball anotherball(nicefp(1), &mat2)
+	ball anotherball(nicefp(1), &mat2);
 	theball.translate(translationamount);
 	anotherball.translate(trans2);
 	theworld->addsurfacegroup(theball);
