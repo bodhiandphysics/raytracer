@@ -107,7 +107,7 @@ world::~world() {
   delete thecamera;
 }
 
-color world::bgcolor(vec3 &direction) {return vec3(0,0,0);}
+color world::bgcolor(vec3 &direction) {return vec3(1,1,1);}
 
 void world::addsurfacegroup(surfacegroup &group) {
 

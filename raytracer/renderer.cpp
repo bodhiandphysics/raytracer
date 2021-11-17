@@ -1,5 +1,8 @@
 
 #include "renderer.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <unistd.h>
+#include "stb_image_write.h"
 
 
 namespace camera {
@@ -15,13 +18,15 @@ camera::camera(vec3 position, vec3 direction, vec3 image_udirection,
   this->focal_length = focal_length;
   this->u_size = u_size;
   this->v_size = v_size;
+  this->height = height;
+  this->width = width;
 
-  this->image = (vec3 *)malloc(height * width * sizeof(double));
 }
 
-camera::~camera() { free(this->image); }
+camera::~camera() { 
+ }
 
-void rendertask(camera *camera, int start, int stride, world::world &theworld,
+void rendertask(camera *camera, vec3* theimage, int start, int stride, world::world *theworld,
                         int cutoff, double maxdistance) {
 
   vec3 position = camera->position;
@@ -35,13 +40,14 @@ void rendertask(camera *camera, int start, int stride, world::world &theworld,
               (camera->u_size / camera->width).value; // half sizes of image
   double v_scale = (camera->v_size / camera->height).value;
 
-  vec3 *image = camera->image;
+
+  vec3* image = theimage;
   int height = camera->height; // half height and width
   int width = camera->width;
-
+  
   for (int i = -width - 1 + start; i < width; i += stride) {
 
-    for (int j = 0; j < height; j++) {
+    for (int j = 0; j < height -1; j++) {
 
       // this could be optomized
       vec3 pixel_loc = position + (direction * focal_length) +
@@ -50,35 +56,44 @@ void rendertask(camera *camera, int start, int stride, world::world &theworld,
       vec3 startingpoint = pixel_loc - position;
       geom::ray lightray(pixel_loc, startingpoint);
 
+      vec3 pixcolor = raytrace::raytrace(lightray, theworld, cutoff, nicefp(maxdistance));
 
-      image[(i + width + 1) + width *j] =
-          raytrace::raytrace(lightray, theworld, cutoff, nicefp(maxdistance));
+      
+      theimage[i + width + 1 + width *j] = pixcolor;
+
+        
     }
   }
 }
 
-void camera::render(const char *filename, world::world &theworld, int cutoff,
+void camera::render(const char *filename, world::world *theworld, int cutoff,
                     double maxdistance) { // this is dumb multithreading, but it
                                           // should work on average
-  int numthreads = std::thread::hardware_concurrency();
-  std::vector<std::thread> threads;
+  //int numthreads = std::thread::hardware_concurrency();
+  //std::vector<std::thread> threads;
 
   // remember to put in exceptions later
-  for (int threadnum = 0; threadnum < numthreads; threadnum++)
-    threads.emplace_back(rendertask, this, threadnum, numthreads, std::ref(theworld), cutoff,
-                         maxdistance);
+ // for (int threadnum = 0; threadnum < numthreads; threadnum++)
+    //threads.emplace_back(rendertask, this, threadnum, numthreads, std::ref(theworld), cutoff,
+                        // maxdistance);
+  vec3* theimage = (vec3 *)malloc(height * width * sizeof(vec3));
 
-  for (int threadnum = 0; threadnum < numthreads; threadnum++)
-    threads[threadnum].join();  
 
-  create_png(filename, this->image, this->height, this->width);
+
+  rendertask(this, theimage, 0, 1, theworld, cutoff, maxdistance);
+                        // maxdistance
+  //for (int threadnum = 0; threadnum < numthreads; threadnum++)
+  //  threads[threadnum].join(); 
+
+  create_png(filename, theimage, this->height, this->width);
+  free(theimage);
 }
 
 void create_png(const char *filename, vec3 *pixeldata, int height,
                 int width) {
 
   char *rgbabuffer = (char *)malloc(4 * height * width * sizeof(char));
-
+  
   for (int i = 0; i < width; i++)
     for (int j = 0; j < height; j++) {
 
@@ -99,8 +114,11 @@ void create_png(const char *filename, vec3 *pixeldata, int height,
       rgbabuffer[4 * (width * j + i) + 3] = static_cast<int>(alphacolorvalue);
     }
 
-  if (stbi_write_png(filename, width, height, 4, (void*) rgbabuffer, width * 4) != 0)
-    std::cout << "There was an error with producing the png!\n";
+  
+
+
+  if (stbi_write_png(filename, width, height, 4, (void*) rgbabuffer, height * 4) != 0)
+     std::cout << "There was an error with producing the png!\n";
   free(rgbabuffer);
 }
 } // namespace camera

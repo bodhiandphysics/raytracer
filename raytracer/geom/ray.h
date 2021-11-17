@@ -10,6 +10,7 @@ struct ray {
 
   ray(const vec3 &anorigin, vec3 &unnormalized);
   ray() = default;
+  ray contin(double amount);
   ray reflect(vec3 &point, vec3 &normal);
   bool refract(vec3 &point, vec3 &normal, nicefp &inref_index,
                nicefp &outref_index, ray &result);

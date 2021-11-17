@@ -5,16 +5,18 @@
 namespace raytrace {
 
 surf::surface *find_next_surface(geom::ray &theray,
-                                 world::world theworld,
+                                 world::world *theworld,
                                  geom::interception &intercept,
                                  nicefp maxdistance) {
   nicefp cutoff = maxdistance;
+  if (cutoff < 0) return nullptr;
   surf::surface *retsurf = nullptr;
   bool didintercept;
 
-  for (surf::surface *checksurf : theworld.surfaces) {
+  for (int i = 0; i < theworld->surfaces.size(); i++) {
 
     // rmember to set intercept max distance in caller
+    surf::surface* checksurf = theworld->surfaces[i];
     didintercept =
         checksurf->shape->calc_interception(theray, cutoff, intercept);
     if (didintercept) {
@@ -25,7 +27,8 @@ surf::surface *find_next_surface(geom::ray &theray,
   return retsurf;
 }
 
-color cast_to_light(ray &theray, const world::world &theworld,
+
+color cast_to_light(ray &theray, world::world *theworld,
                     surf::light &thelight, nicefp starting_n,
                     nicefp maxdistance) {
 
@@ -42,8 +45,9 @@ color cast_to_light(ray &theray, const world::world &theworld,
   geom::interception intercept(light_distance, vec3(0, 0, 0), vec3(0, 0, 0), uv(nicefp(0),nicefp(0)));
 
   surf::surface* next_surface;
-  while ((next_surface= find_next_surface(
-              theray, theworld, intercept, maxdistance)) != nullptr) {
+  ray nextray = theray.contin(.01);
+  while ((next_surface = find_next_surface(
+              nextray, theworld, intercept, maxdistance)) != nullptr) {
 
     surf::material *next_material;
     surf::material *current_material;
@@ -74,6 +78,10 @@ color cast_to_light(ray &theray, const world::world &theworld,
 
     if (currentbeer.norm2() > nicefp(200))
       return color(0, 0, 0); // to much in the way
+
+    maxdistance = maxdistance - intercept.distance;
+    nextray.origin = intercept.position;
+
   }
 
   // we break out of the loop at the light
@@ -83,7 +91,7 @@ color cast_to_light(ray &theray, const world::world &theworld,
                          // better for close distances
 }
 
-color raytrace(ray &theray, world::world &theworld, int cutoff,
+color raytrace(ray &theray, world::world *theworld, int cutoff,
                nicefp maxdistance) {
 
   color retcolor = vec3(0, 0, 0);
@@ -95,7 +103,7 @@ color raytrace(ray &theray, world::world &theworld, int cutoff,
   surf::surface *next_surface =
       find_next_surface(theray, theworld, intercept, maxdistance);
   if (next_surface == nullptr)
-    return theworld.bgcolor(theray.direction); // we went off the map
+    return theworld->bgcolor(theray.direction); // we went off the map
 
   surf::material *next_material;
   surf::material *current_material;
@@ -114,13 +122,13 @@ color raytrace(ray &theray, world::world &theworld, int cutoff,
   // first do global illumination
   if (next_material->doesambient) {
 
-    retcolor = retcolor + next_material->materialcolor(uv).mult(next_material->ambient(uv))
-                    .mult(theworld.ambientlight);
+    retcolor = (retcolor + next_material->materialcolor(uv).mult(next_material->ambient(uv))
+                    .mult(theworld->ambientlight)).normalize();
   }
 
   // next cast to all the light sources
 
-  for (surf::light &thelight : theworld.lights) {
+  for (surf::light &thelight : theworld->lights) {
 
     // find if we need to transition matieral
 
@@ -136,16 +144,18 @@ color raytrace(ray &theray, world::world &theworld, int cutoff,
 
     color shadowlightcolor =
         cast_to_light(shadowray, theworld, thelight, currentn, maxdistance);
-    retcolor = retcolor + next_material
+
+   
+    retcolor = (retcolor + next_material
                  ->bdfrfactor(uv, shadowray.direction,
                               theray.direction, intercept.normal)
-                 .mult(shadowlightcolor);
+                 .mult(shadowlightcolor)).normalize();
   }
 
   // next handle reflections
 
   vec3 reflectdirection = theray.direction.reflect(intercept.normal);
-  ray reflectray(intercept.position, reflectdirection);
+  ray reflectray(intercept.position + reflectdirection*.01, reflectdirection); // make sure we're not inside the surface
 
   color reflectlightcolor =
       raytrace(reflectray, theworld, cutoff - 1, maxdistance);
@@ -163,10 +173,10 @@ color raytrace(ray &theray, world::world &theworld, int cutoff,
     fresnelterm = nicefp(schlick);
   }
 
-  retcolor = retcolor + (next_material->bdfrfactor(uv, reflectray.direction,
+  retcolor = (retcolor + (next_material->bdfrfactor(uv, reflectray.direction,
                                       theray.direction, intercept.normal) *
             fresnelterm)
-               .mult(reflectlightcolor);
+               .mult(reflectlightcolor)).normalize();
 
   // then handle refraction
 
@@ -178,7 +188,7 @@ color raytrace(ray &theray, world::world &theworld, int cutoff,
 
   if (didrefract)
     refractlightcolor = raytrace(refractray, theworld, cutoff - 1, maxdistance);
-  retcolor = retcolor + refractlightcolor * (nicefp(1) - fresnelterm); // try to conserve engery
+  retcolor = (retcolor + refractlightcolor * (nicefp(1) - fresnelterm)).normalize(); // try to conserve engery
 
   // finally put it all together
 

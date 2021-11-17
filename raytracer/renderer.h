@@ -1,13 +1,15 @@
 #pragma once
+
 #include "surface.h"
 #include "world.h"
-#include "world.h"
-#include "stb_image_write.h"
 #include <stdio.h>
 #include <thread>
 #include <vector>
 #include <iostream>
 #include "raytrace.h"
+
+
+
 namespace world {
 
   struct world;
@@ -35,7 +37,7 @@ struct camera {
          nicefp v_size, int height, int width);
   ~camera();
 
-  void render(const char *filename, world::world &theworld, int cutoff,
+  void render(const char *filename, world::world *theworld, int cutoff,
               double maxdistance);
 };
 

@@ -12,7 +12,7 @@ using namespace geom;
 using color = vec3; 
 
 
-static int cutoff; // recursion depth of raytracer;
+static int cutoff = 5; // recursion depth of raytracer;
 static nicefp maxdistance =
     nicefp(200); // default value of how far to check for objects
 

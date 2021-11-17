@@ -66,7 +66,7 @@ nicefp nicesqrt(nicefp x) { return nicefp(sqrt(x.value)); }
 // calculate the negative exp of a nicecp;
 nicefp nicenexp(nicefp x) {
 
-  if (x.value = 0)
+  if (x.value == 0)
     return 1;
   else
     return exp(-x.value);

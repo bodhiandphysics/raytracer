@@ -173,45 +173,47 @@ bool sphere::calc_interception(ray &ray, const nicefp within_d,
   bool didintercept;
 
   vec3 delta_o_c = ray.origin - center;
-  nicefp d_dot_d = ray.direction.dot(ray.direction);
+  nicefp d_dot_d = ray.direction.norm2();
   nicefp d_dot_o_c = ray.direction.dot(delta_o_c);
 
   nicefp descriminant =
       (d_dot_o_c * d_dot_o_c) -
-      (d_dot_d * (delta_o_c.dot(delta_o_c) - radius * radius));
+      ((d_dot_d * (delta_o_c.norm2()) - (radius * radius)));
 
   if (descriminant < 0)
     return false;
 
   nicefp sd = nicesqrt(descriminant);
 
-  nicefp distance_p = sd - d_dot_o_c; // note direction is always normalized!
+  nicefp distance_p = -sd + d_dot_o_c; // note direction is always normalized!
 
   nicefp distance_m = -sd - d_dot_o_c;
+  nicefp possible_distance;
+  vec3 possible_position;
 
   if (distance_m < distance_p && distance_m.value > 0 &&
       distance_m < within_d) {
     nicefp possible_distance = distance_m;
     vec3 possible_position =
-        delta_o_c +
-        ray.direction * distance_m; // i.e. orign + direction* distance - center
+        ray.origin + ray.direction*distance_m;
     if (maxangle < (possible_position - center).dot(orientation)) {
       out.distance = possible_distance;
       out.position = possible_position;
       didintercept = true;
     }
-  }
+  } else {
 
-  if (distance_p.value > 0 && distance_p < within_d) {
-    nicefp possible_distance = distance_p;
-    vec3 possible_position =
-        delta_o_c +
-        ray.direction * distance_p; // i.e. orign + direction* distance - center
+    if (distance_p.value > 0 && distance_p < within_d) {
+        possible_distance = distance_p;
+        possible_position =
+          ray.origin +
+          ray.direction * distance_p; // i.e. orign + direction* distance - center
 
-    if (maxangle < (possible_position - center).dot(orientation)) {
-      out.distance = possible_distance;
-      out.position = possible_position;
-      didintercept = true;
+      if (maxangle < (possible_position - center).dot(orientation)) {
+        out.distance = possible_distance;
+        out.position = possible_position;
+        didintercept = true;
+      }
     }
   }
 
@@ -224,6 +226,7 @@ bool sphere::calc_interception(ray &ray, const nicefp within_d,
 
   return false;
 }
+
 
 uv sphere::getuv(vec3 &position) {
 

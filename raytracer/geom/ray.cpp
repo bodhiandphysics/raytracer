@@ -9,6 +9,10 @@ ray::ray(const vec3 &anorigin, vec3 &unnormalized) {
   direction = unnormalized.normalize();
 }
 
+ray ray::contin(double amount) {
+
+  return ray(this->origin + this->direction * amount, this->direction);
+}
 ray ray::reflect(vec3 &point, vec3 &normal) { // create a reflection ray
 
   vec3 newdirection = direction.reflect(normal);
