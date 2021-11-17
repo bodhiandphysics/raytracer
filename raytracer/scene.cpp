@@ -42,7 +42,7 @@ struct ballmaterial2 : phong {
 	}
 
 	virtual color materialcolor(const geom::uv &location) override {
-		if (floor(location.u.value * 10) % 2 == 0) return color(1,0,0);
+		if (int(location.u.value * 10) % 2 == 0) return color(1,0,0);
 		else return color (0,1,0);
 	}
  	virtual color ambient(const geom::uv &location) override {return color(1,1,1);}
