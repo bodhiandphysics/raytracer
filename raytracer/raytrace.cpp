@@ -151,7 +151,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
     retcolor = (retcolor + next_material
                  ->bdfrfactor(uv, shadowray.direction,
                               theray.direction, intercept.normal)
-                 .mult(shadowlightcolor)).mult(thelight.lightcolor);
+                 .mult(shadowlightcolor).mult(thelight.lightcolor));
   }
 
   // next handle reflections
