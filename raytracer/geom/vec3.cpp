@@ -90,7 +90,7 @@ vec3 vec3::cross(const vec3 &other) {
   return vec3(returnx, returny, returnz);
 }
 
-vec3 vec3::nexp(const vec3 &vec) { // e ^ -x, userful for the beer equation
+vec3 nexp(const vec3 &vec) { // e ^ -x, userful for the beer equation
 
   return vec3(nicenexp(vec.x), nicenexp(vec.y), nicenexp(vec.z));
 }

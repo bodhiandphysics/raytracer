@@ -32,7 +32,8 @@ color cast_to_light(ray &theray, world::world *theworld,
                     surf::light &thelight, nicefp starting_n,
                     nicefp max_distance) {
 
-  nicefp light_distance = (thelight.position - theray.origin).norm();
+  nicefp original_light_distance = (thelight.position - theray.origin).norm();
+  nicefp light_distance = original_light_distance;
   vec3 currentbeer = vec3(0, 0, 0);
   nicefp current_n = starting_n;
 
@@ -84,7 +85,7 @@ color cast_to_light(ray &theray, world::world *theworld,
 
   // we break out of the loop at the light
 
-  return thelight.lightcolor.mult(nexp(currentbeer * light_distance)) /
+  return thelight.lightcolor.mult(nexp(currentbeer) /
          light_distance; // use linear as opposed to quadratic attenuation...
                          // better for close distances
 }

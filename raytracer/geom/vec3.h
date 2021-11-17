@@ -31,7 +31,7 @@ struct vec3 {
 
   vec3 cross(const vec3 &other);
 
-  vec3 nexp(const vec3 &vec);
+  
   vec3 reflect(vec3 &normal);
 
   void translate(const vec3 &by);
@@ -40,4 +40,6 @@ struct vec3 {
 
   void scale(const vec3 &by);
 };
+
+vec3 nexp(const vec3 &vec);
 } // namespace geom
