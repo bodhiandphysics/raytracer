@@ -170,7 +170,7 @@ bool sphere::calc_interception(ray &ray, const nicefp within_d,
                                interception &out) {
 
   // uses the algorithm on page 76 of Shirley and Marschner
-  bool didintercept;
+  bool didintercept = false;
 
   vec3 delta_o_c = ray.origin - center;
   nicefp d_dot_d = ray.direction.norm2();
@@ -191,7 +191,7 @@ bool sphere::calc_interception(ray &ray, const nicefp within_d,
   nicefp possible_distance;
   vec3 possible_position;
 
-  if (distance_m < distance_p && distance_m.value > 0 &&
+  if ((distance_m < distance_p || distance_p < 0) && distance_m.value > 0 &&
       distance_m < within_d) {
     nicefp possible_distance = distance_m;
     vec3 possible_position =
