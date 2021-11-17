@@ -32,22 +32,20 @@ color cast_to_light(ray &theray, world::world *theworld,
                     surf::light &thelight, nicefp starting_n,
                     nicefp max_distance) {
 
-  vec3 delta = thelight.position - theray.origin;
-  nicefp light_distance = delta.norm();
+  nicefp light_distance = (thelight.position - theray.origin).norm();
   vec3 currentbeer = vec3(0, 0, 0);
   nicefp current_n = starting_n;
 
   if (max_distance < light_distance)
     return color(0, 0, 0); // light is too far
-  if ((delta / light_distance).dot(thelight.direction) < thelight.min_cos_angle)
+  if (theray.direction.dot(thelight.direction) < thelight.min_cos_angle)
     return color(0, 0, 0); // outside of light cone
 
   geom::interception intercept(light_distance, vec3(0, 0, 0), vec3(0, 0, 0), uv(nicefp(0),nicefp(0)));
-  nicefp maxdistance = light_distance;
   surf::surface* next_surface;;
   ray nextray = theray;
   while ((next_surface = find_next_surface(
-              nextray, theworld, intercept, maxdistance)) != nullptr) {
+              nextray, theworld, intercept, light_distance)) != nullptr) {
 
     surf::material *next_material;
     surf::material *current_material;
@@ -132,7 +130,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
 
     // find if we need to transition matieral
 
-    vec3 direction_to_light = thelight.position - intercept.position;
+    vec3 direction_to_light = (thelight.position - intercept.position).normalize();
     bool doshadowray = true;
     nicefp currentn;
     if (direction_to_light.dot(next_surface->shape->get_normal(intercept.position)) < 0){
@@ -143,7 +141,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
       currentn =
           current_material->refract_index; // going through the same material
 
-    ray shadowray(intercept.position, direction_to_light);
+    ray shadowray(intercept.position + direction_to_light*.01, direction_to_light);
 
     color shadowlightcolor;
     if (!doshadowray) shadowlightcolor = vec3(0,0,0);
