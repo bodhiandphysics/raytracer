@@ -77,7 +77,7 @@ color cast_to_light(ray &theray, world::world *theworld,
     if (currentbeer.norm2() > nicefp(200))
       return color(0, 0, 0); // to much in the way
 
-    maxdistance = maxdistance - intercept.distance;
+    light_distance = light_distance - intercept.distance;
     nextray.origin = intercept.position;
 
   }
