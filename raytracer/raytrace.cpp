@@ -138,6 +138,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
     if (direction_to_light.dot(next_surface->shape->get_normal(intercept.position)) < 0){
       currentn = next_material->refract_index; // going through new material
       doshadowray = next_material->doestransmit;
+    }
     else
       currentn =
           current_material->refract_index; // going through the same material
