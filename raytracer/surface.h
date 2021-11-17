@@ -12,7 +12,7 @@ using namespace geom;
 struct material {
 
   bool doesrefract = true;
-  bool doesambient = true;
+  bool doesambient = false;
   bool doeslambert = true;
   bool doestransmit = true;
   bool doesfresnel = true;
