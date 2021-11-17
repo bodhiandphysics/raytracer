@@ -215,8 +215,6 @@ uv sphere::getuv(vec3 &position) {
              (2 * M_PI);
 
   return uv(u, v);
-
-  return uv(nicefp(0), nicefp(0));
 }
 
 plane::plane(vec3 acenter, vec3 anormal, vec3 au_axis, vec3 av_axis) {
