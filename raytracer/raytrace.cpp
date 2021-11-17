@@ -199,6 +199,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
   vec3 currentbeer = current_material->beerfactor;
   if (currentbeer == vec3(0,0,0)) {
     retcolor = retcolor.mult(next_material->materialcolor(intercept.atuv)) / intercept.distance;
+    if (retcolor.norm().value > 1) std::cout<<retcolor.norm().value << "\n";
     return retcolor; // don't do nexp if not nescessary
   }
   else {
