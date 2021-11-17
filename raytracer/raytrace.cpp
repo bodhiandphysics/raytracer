@@ -30,24 +30,24 @@ surf::surface *find_next_surface(geom::ray &theray,
 
 color cast_to_light(ray &theray, world::world *theworld,
                     surf::light &thelight, nicefp starting_n,
-                    nicefp maxdistance) {
+                    nicefp max_distance) {
 
   vec3 delta = thelight.position - theray.origin;
   nicefp light_distance = delta.norm();
   vec3 currentbeer = vec3(0, 0, 0);
   nicefp current_n = starting_n;
 
-  if (maxdistance < light_distance)
+  if (max_distance < light_distance)
     return color(0, 0, 0); // light is too far
   if ((delta / light_distance).dot(thelight.direction) < thelight.min_cos_angle)
     return color(0, 0, 0); // outside of light cone
 
   geom::interception intercept(light_distance, vec3(0, 0, 0), vec3(0, 0, 0), uv(nicefp(0),nicefp(0)));
-
+  nicefp maxdistance = light_distance;
   surf::surface* next_surface;
   ray nextray = theray.contin(.01);
   while ((next_surface = find_next_surface(
-              nextray, theworld, intercept, lightdistance)) != nullptr) {
+              nextray, theworld, intercept, maxdistance)) != nullptr) {
 
     surf::material *next_material;
     surf::material *current_material;
