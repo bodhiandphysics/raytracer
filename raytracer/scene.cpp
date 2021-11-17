@@ -28,7 +28,7 @@ world::world *create_scene() {
                nicefp(1), 800, 800);
 	world::world *theworld = new world::world(thecamera, vec3(1,1,1));
 
-	vec3 translationamount(4,4,-4);
+	vec3 translationamount(0,0,-7);
 	ball theball(nicefp(1), &mat1);
 	theball.translate(translationamount);
 	theworld->addsurfacegroup(theball);
