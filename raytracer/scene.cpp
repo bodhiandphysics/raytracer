@@ -71,6 +71,7 @@ world::world *create_scene() {
 	theball.translate(translationamount);
 	anotherball.translate(trans2);
 	theworld->addsurfacegroup(theball);
+	theworld->addsurfacegroup(anotherball);
 
 	theworld->addlight(surf::light(vec3(10000,10000,10000), vec3(0,0, 5), vec3(0,0,-1), nicefp(-1)));
 
