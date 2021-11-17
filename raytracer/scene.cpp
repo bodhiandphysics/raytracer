@@ -8,7 +8,7 @@ struct ballmaterial : phong {
 
 
 	virtual color materialcolor(const geom::uv &location) override {return color(.9, 0 ,0);}
- 	virtual color ambient(const geom::uv &location) override {return color(1,1,1);}
+ 	virtual color ambient(const geom::uv &location) override {return color(.1,.1,.1);}
   	virtual color diffuse(const geom::uv &location) override {return color(.4,.4,.4);}
   	virtual color specular(const geom::uv &location) override {return color(.4,.4,.4);}
 	virtual color shiny(uv theuv) override {
@@ -33,7 +33,7 @@ world::world *create_scene() {
 	theball.translate(translationamount);
 	theworld->addsurfacegroup(theball);
 
-	theworld->addlight(surf::light(vec3(1,1,1), vec3(0,0, 5), vec3(0,0,-1), nicefp(-1)));
+	theworld->addlight(surf::light(vec3(1,1,1), vec3(4,-4, 5), vec3(0,0,-1), nicefp(-1)));
 
 	return theworld;  
 }
