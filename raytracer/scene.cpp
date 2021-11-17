@@ -13,7 +13,7 @@ struct ballmaterial : phong {
   	virtual color specular(const geom::uv &location) override {return color(.4,.4,.4);}
 	virtual color shiny(uv theuv) override {
 
-		return vec3(25,25, 25);
+		return vec3(3,3,3);
 	}
 };
 
@@ -33,7 +33,7 @@ world::world *create_scene() {
 	theball.translate(translationamount);
 	theworld->addsurfacegroup(theball);
 
-	theworld->addlight(surf::light(vec3(1,1,1), vec3(0,0, 5), vec3(0,0,-1), nicefp(-1)));
+	theworld->addlight(surf::light(vec3(.2,.2,.2), vec3(0,0, 5), vec3(0,0,-1), nicefp(-1)));
 
 	return theworld;  
 }
