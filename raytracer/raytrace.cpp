@@ -84,7 +84,7 @@ color cast_to_light(ray &theray, world::world *theworld,
 
   // we break out of the loop at the light
 
-  return thelight.lightcolor.nexp(currentbeer) /
+  return thelight.lightcolor.mult(nexp(currentbeer * light_distance)) /
          light_distance; // use linear as opposed to quadratic attenuation...
                          // better for close distances
 }
@@ -151,7 +151,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
     retcolor = (retcolor + next_material
                  ->bdfrfactor(uv, shadowray.direction,
                               theray.direction, intercept.normal)
-                 .mult(shadowlightcolor).mult(thelight.lightcolor));
+                 .mult(shadowlightcolor));
   }
 
   // next handle reflections
@@ -199,7 +199,7 @@ color raytrace(ray &theray, world::world *theworld, int cutoff,
   if (currentbeer == vec3(0,0,0))
     return retcolor.mult(next_material->materialcolor(intercept.atuv)) / intercept.distance; // don't do nexp if not nescessary
   else 
-    return (retcolor.mult(next_material->materialcolor(intercept.atuv))).nexp(currentbeer * intercept.distance) /
+    return (retcolor.mult(next_material->materialcolor(intercept.atuv))).mult(nexp(currentbeer * intercept.distance)) /
            intercept.distance; // use linear attenuation
   
 }
