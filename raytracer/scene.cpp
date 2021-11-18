@@ -5,12 +5,14 @@ namespace scene {
 
 struct ballmaterial : lambert {
 
-		doesrefract = false;
-	   doesambient = true;
-	   doeslambert = true;
-	   doestransmit = false;
-	   doesfresnel = false;
-	   doesreflect = false;
+ballmaterial() {
+	doesrefract = false;
+	doesambient = true;
+	doeslambert = true;
+	doestransmit = false;
+	doesfresnel = false;
+	doesreflect = false;
+}
 
 virtual color materialcolor(const geom::uv &location) override {return color(1, 0 ,0);}
 
