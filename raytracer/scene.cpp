@@ -19,7 +19,7 @@ virtual color materialcolor(const geom::uv &location) override {return color(1, 
 }
 
 
-static ballmaterial mat1;  
+static ballmaterial mat1();  
 
 
 
