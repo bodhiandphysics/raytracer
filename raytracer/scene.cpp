@@ -3,59 +3,21 @@
 
 namespace scene {
 
-struct ballmaterial : phong {
+struct ballmaterial : lambert {
 
-
-
-	ballmaterial() {
-
-	   doesrefract = false;
+		doesrefract = false;
 	   doesambient = true;
 	   doeslambert = true;
 	   doestransmit = false;
 	   doesfresnel = false;
-	   doesreflect = true;
-	}
+	   doesreflect = false;
 
-	virtual color materialcolor(const geom::uv &location) override {return color(1, 0 ,0);}
- 	virtual color ambient(const geom::uv &location) override {return color(1,1,1);}
-  	virtual color diffuse(const geom::uv &location) override {return color(1,1,1);}
-  	virtual color specular(const geom::uv &location) override {return color(1,1,1);}
-	virtual color shiny(uv theuv) override {
+virtual color materialcolor(const geom::uv &location) override {return color(1, 0 ,0);}
 
-		return vec3(70,70,70);
-	}
-};
-
-struct ballmaterial2 : phong {
+}
 
 
-
-	ballmaterial2() {
-
-	   doesrefract = false;
-	   doesambient = true;
-	   doeslambert = true;
-	   doestransmit = false;
-	   doesfresnel = false;
-	   doesreflect = true;
-	}
-
-	virtual color materialcolor(const geom::uv &location) override {
-		if (int(location.u.value * 20) % 2 == 0) return color(1,0,0);
-		else return color (0,1,0);
-	}
- 	virtual color ambient(const geom::uv &location) override {return color(1,1,1);}
-  	virtual color diffuse(const geom::uv &location) override {return color(1,1,1);}
-  	virtual color specular(const geom::uv &location) override {return color(1,1,1);}
-	virtual color shiny(uv theuv) override {
-
-		return vec3(70,70,70);
-	}
-};
-
-static ballmaterial mat1; 
-static ballmaterial2 mat2; 
+static ballmaterial mat1;  
 
 
 
