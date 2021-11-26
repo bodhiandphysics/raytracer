@@ -71,7 +71,7 @@ bool triangle::calc_interception(ray &ray, nicefp within_d, interception &out) {
 
   vec3 edge1 = side_a;
   vec3 edge2 = side_b;
-  vec3 origin_to_tri = ray.origin - position;
+  vec3 origin_to_tri = position - ray.origin;
 
   nicefp determinant = ray.direction.cross(edge2).dot(edge1);
 

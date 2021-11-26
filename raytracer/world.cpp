@@ -65,7 +65,7 @@ box::box(material* inside) {
   addshape(new triangle(vec3(1, 0, 0), vec3(0, 0, -1),
                                        vec3(0, 1, 0), vec3(1, 0, 0), uv(0, 0),
                                        uv(0, 0), uv(0, 0)));
-  addshape(new triangle(vec3(1, 1, 0), vec3(-1, 0, 0),
+  addshape(new triangle(vec3(1, 1, -1), vec3(0, 0, 1),
                                        vec3(0, -1, 0), vec3(1, 0, 0), uv(0, 0),
                                        uv(0, 0), uv(0, 0))); // + x triangles
 
