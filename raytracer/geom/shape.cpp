@@ -64,14 +64,11 @@ bool triangle::calc_interception(ray &ray, nicefp within_d, interception &out) {
   // backfaces for refraction algorithm was mostly copied from the original
   // article, with some mods
 
-  if (ray.direction.dot(normal) == 0)
-    return false;
-
   nicefp t, u, v;
 
   vec3 edge1 = side_a;
   vec3 edge2 = side_b;
-  vec3 origin_to_tri = position - ray.origin;
+  vec3 origin_to_tri = ray.origin - position;
 
   nicefp determinant = ray.direction.cross(edge2).dot(edge1);
 
@@ -92,14 +89,14 @@ bool triangle::calc_interception(ray &ray, nicefp within_d, interception &out) {
   if (v < 0 || determinant < u + v)
     return false;
 
-  t = q.dot(edge2);
+  t = q.dot(edge2)/determinant;
   if (t < 0)
     return false; // missed triangle
 
   if (within_d < t)
     return false;
   out.distance = t;
-  out.position = position + ((edge1 * u) + (edge2 * v)) / determinant;
+  out.position = ray.origin + ray.direction * t;
   out.normal = get_normal(out.position);
   out.atuv = getuv(out.position);
   return true;
