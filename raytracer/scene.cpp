@@ -33,7 +33,7 @@ world::world *create_scene() {
 
 	vec3 translationamount(0,0,-5);
 	vec3 trans2(3, 2, -7);
-	box thebox(&mat1);
+	box thebox((material*) &mat1);
 	
 	thebox.translate(translationamount);
 	

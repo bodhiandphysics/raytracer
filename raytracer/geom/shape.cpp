@@ -29,7 +29,7 @@ triangle::triangle(vec3 aposition, vec3 aside_a, vec3 aside_b, vec3 anormal,
   this->uv_b = uv_b;
   this->uv_c = uv_c;
 
-  normal = anormal;
+  normal = anormal; 
   area = normal.norm() / 2;
 }
 
@@ -53,8 +53,8 @@ void triangle::scale(const vec3 &by) {
   position = position.mult(by);
   side_a = side_a.mult(by);
   side_b = side_b.mult(by);
-  normal = normal.mult(by).mult(by);
-  area = normal.norm() / 2;
+  normal = normal;
+  area = side_a.cross(side_b).norm() / 2;
 }
 
 bool triangle::calc_interception(ray &ray, nicefp within_d, interception &out) {
@@ -129,7 +129,7 @@ uv triangle::getuv(vec3 &intersect) { // using barycentric cooredinate
 
 vec3 triangle::get_normal(vec3 &position) {
 
-  return (normal * 2) / area; // area is half the norm of the normal
+  return normal; 
 }
 
 sphere::sphere(vec3 acenter, vec3 orientationvec, vec3 orientation_equatorvec,
